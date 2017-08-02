@@ -6,19 +6,24 @@ SET(CMAKE_CXX_STANDARD 14)
 SET(CMAKE_CXX_FLAGS "-Wall")
 
 ADD_DEFINITIONS(-DDEBUG)
-INCLUDE_DIRECTORIES(Dependency)
+FIND_PACKAGE(OpenSSL REQUIRED)
+INCLUDE_DIRECTORIES(Dependency Header ${OPENSSL_INCLUDE_DIR})
 
 SET(SOURCE_FILES
-	Dependency/mongoose/mongoose.c
-)
+    Dependency/mongoose/mongoose.c
+    Foundation/scaffold.cpp Foundation/Request.cpp Foundation/Response.cpp)
 
 ADD_LIBRARY(scaffold_static STATIC ${SOURCE_FILES})
-ADD_LIBRARY(scaffold_shared SHARED ${SOURCE_FILES})
 SET_TARGET_PROPERTIES(scaffold_static PROPERTIES OUTPUT_NAME "scaffold")
-SET_TARGET_PROPERTIES(scaffold_shared PROPERTIES OUTPUT_NAME "scaffold")
-SET_TARGET_PROPERTIES(scaffold_shared PROPERTIES CLEAN_DIRECT_OUTPUT 1)
+SET_TARGET_PROPERTIES(scaffold_static PROPERTIES CLEAN_DIRECT_OUTPUT 1)
 
-INSTALL(TARGETS scaffold_static scaffold_shared
-		ARCHIVE DESTINATION lib
-		LIBRARY DESTINATION lib)
+#ADD_LIBRARY(scaffold_shared SHARED ${SOURCE_FILES})
+#SET_TARGET_PROPERTIES(scaffold_shared PROPERTIES OUTPUT_NAME "scaffold")
+#SET_TARGET_PROPERTIES(scaffold_shared PROPERTIES CLEAN_DIRECT_OUTPUT 1)
+
+#INSTALL(TARGETS scaffold_static scaffold_shared
+#		ARCHIVE DESTINATION lib
+#		LIBRARY DESTINATION lib)
+INSTALL(TARGETS scaffold_static
+        ARCHIVE DESTINATION lib)
 INSTALL(DIRECTORY Header/ DESTINATION include/scaffold)

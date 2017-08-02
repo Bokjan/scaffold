@@ -1,0 +1,7 @@
+#ifndef SCAFFOLD_RESPONSE_HPP
+#define SCAFFOLD_RESPONSE_HPP
+class Response
+{
+
+};
+#endif //SCAFFOLD_RESPONSE_HPP

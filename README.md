@@ -1,29 +1,33 @@
 # What is scaffold
 `scaffold` is a cross-platform toy web framework. I develop it for finishing my C++ course.
 
-Inspired by `Express.js`, `scaffold` is a minimal and flexible C++ web application framework that provides a set of features for web and mobile applications, and provides a thin layer of fundamental web application features.
+Inspired by [`Express`](https://expressjs.com), `scaffold` is a minimal and flexible C++ web application framework that provides a set of features for web and mobile applications, and provides a thin layer of fundamental web application features.
 
 # Environment
 To build this project, `cmake`, `make` and a proper C++ compiler is required. The compiler should at least support C++14 standard.
 
 I use macOS 10.12.5 for developing and Fedora 25 for testing. With the help of [cesanta/mongoose](https://github.com/cesanta/mongoose), `scaffold` can run on various operating systems and hardware architectures.
 
+# Dependencies
+- [cesanta/mongoose](https://github.com/cesanta/mongoose)
+- [openssl/openssl](https://github.com/openssl/openssl)
+
 # How to use
 Firstly, we need to build the `scaffold` library.
 
-1. Clone the repository
+1. Clone the repository.
    ```bash
    git clone https://github.com/Bokjan/scaffold
    ```
-2. Create a directory for building
+2. Create a directory for building.
    ```bash
    cd scaffold
    mkdir build && cd build
    ```
    All the following commands run under `/path/to/scaffold/build`.
-3. Run CMake to configure the project
+3. Run CMake to configure the project. Note that `OpenSSL` is required, if your environment cannot automatically provide this, you need to specify the paths (following is an example).
    ```bash
-   cmake ..
+   cmake -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl -DOPENSSL_INCLUDE_DIR=/usr/local/opt/openssl/include -DOPENSSL_LIBRARIES=/usr/local/opt/openssl/lib ..
    ```
    You can set environment variables. For example, you specify `clang++` as the C++ compiler by setting the `CXX` environment variable as following:
    ```bash
@@ -34,7 +38,7 @@ Firstly, we need to build the `scaffold` library.
    cmake -DCMAKE_INSTALL_PREFIX=/home/bokjan/install ..
    ```
 
-4. Build and install
+4. Build and install.
    ```bash
    make && make install
    ```
@@ -56,7 +60,7 @@ After running `make install`, library (both static and dynamic) and headers are 
     ```python
     Env = Environment()
     Env.Append(LIBS = ['scaffold'])
-    Env.Append(CXXPATH = ['/path/to/headers'])
+    Env.Append(CPPPATH = ['/path/to/headers'])
     Env.Append(LIBPATH = ['/path/to/libraries'])
     ```
 

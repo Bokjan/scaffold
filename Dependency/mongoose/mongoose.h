@@ -2893,7 +2893,7 @@ struct {								\
 #endif
 
 #ifndef MG_ENABLE_IPV6
-#define MG_ENABLE_IPV6 0
+#define MG_ENABLE_IPV6 1
 #endif
 
 #ifndef MG_ENABLE_JAVASCRIPT
@@ -2901,7 +2901,7 @@ struct {								\
 #endif
 
 #ifndef MG_ENABLE_MQTT
-#define MG_ENABLE_MQTT 1
+#define MG_ENABLE_MQTT 0
 #endif
 
 #ifndef MG_ENABLE_MQTT_BROKER
