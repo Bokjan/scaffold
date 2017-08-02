@@ -4,10 +4,6 @@
 using std::string;
 struct mg_mgr;
 struct mg_connection;
-enum class HttpMethod
-{
-
-};
 class scaffold
 {
 private:
