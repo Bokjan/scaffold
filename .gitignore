@@ -30,3 +30,15 @@
 *.exe
 *.out
 *.app
+
+# User defined rules
+# CLion preferences
+.idea
+# Manually built `scaffold`
+cmake-manual
+# CLion created `cmake` folder
+cmake-build-debug
+# Miscellaneous files
+ignore
+# A symbolic link to `Header` folder (for testing)
+scaffold
