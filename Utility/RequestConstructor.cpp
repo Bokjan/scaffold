@@ -1,9 +1,11 @@
 #include <cstring>
 #include "RequestConstructor.hpp"
-bool RequestConstructor::determineXhr(std::multimap<string, string> &headers)
+bool RequestConstructor::determineXhr(std::map<string, string> &headers)
 {
-	auto xhr = headers.equal_range("X-Requested-With").first->second;
-	return xhr == "XMLHttpRequest";
+	auto xhr = headers.find("X-Requested-With");
+	if(xhr == headers.end())
+		return false;
+	return xhr->second == "XMLHttpRequest";
 }
 HttpMethod RequestConstructor::determineMethod(mg_str mg_method)
 {
@@ -27,39 +29,45 @@ HttpMethod RequestConstructor::determineMethod(mg_str mg_method)
 		ret = HttpMethod::CONNECT;
 	return ret;
 }
-void RequestConstructor::buildHeaders(std::multimap<string, string> &headers,
+void RequestConstructor::buildHeaders(std::map<string, string> &headers,
                                       mg_str *k, mg_str *v)
 {
 	for(int i = 0; k[i].p != nullptr && i < MG_MAX_HTTP_HEADERS; ++i)
-		headers.insert(std::make_pair(string(k[i].p, k[i].len), string(v[i].p, v[i].len)));
+	{
+		auto key = string(k[i].p, k[i].len);
+		auto f = headers.find(key);
+		if(f != headers.end())
+			f->second += "," + string(v[i].p, v[i].len);
+		else
+			headers.insert(std::make_pair(key, string(v[i].p, v[i].len)));
+	}
 }
 void RequestConstructor::parseCookies(std::map<string, string> &cookies,
-                                      const std::multimap<string, string> &headers)
+                                      const std::map<string, string> &headers)
 {
-	auto range = headers.equal_range("Cookie");
-	for(auto it = range.first; it != range.second; ++it)
+	auto f = headers.find("Cookie");
+	if(f == headers.end())
+		return;
+	auto &s = f->second;
+	// Start
+	string k, v;
+	for(auto sit = s.cbegin(); sit != s.cend(); ++sit)
 	{
-		auto &s = it->second;
-		// Start
-		string k, v;
-		for(auto sit = s.cbegin(); sit != s.cend(); ++sit)
-		{
-			// Clean
-			k.clear(), v.clear();
-			// Skip some characters
-			if(*sit == ' ' || *sit == ';')
-				continue;
-			// Read key
-			while(*sit != '=' && sit < s.cend())
-				k.push_back(*sit), ++sit;
-			if(sit >= s.cend())
-				break;
-			++sit;
-			// Read value
-			while(*sit != ';' && sit < s.cend())
-				v.push_back(*sit), ++sit;
-			cookies[k] = v;
-		}
+		// Clean
+		k.clear(), v.clear();
+		// Skip some characters
+		if(*sit == ' ' || *sit == ';')
+			continue;
+		// Read key
+		while(*sit != '=' && sit < s.cend())
+			k.push_back(*sit), ++sit;
+		if(sit >= s.cend())
+			break;
+		++sit;
+		// Read value
+		while(*sit != ';' && sit < s.cend())
+			v.push_back(*sit), ++sit;
+		cookies[k] = v;
 	}
 }
 void RequestConstructor::parseQuery(std::map<string, string> &query, mg_str q)
@@ -115,10 +123,13 @@ string RequestConstructor::convertUrlEscapeSequence(const string &s)
 	}
 	return ret;
 }
-string RequestConstructor::getHostname(std::multimap<string, string> &headers)
+string RequestConstructor::getHostname(std::map<string, string> &headers)
 {
 	string ret;
-	auto s = headers.equal_range("Host").first->second;
+	auto f = headers.find("Host");
+	if(f == headers.end())
+		return "";
+	auto &s = f->second;
 	auto i = s.length() - 1;
 	while(s[i--] != ':');
 	return string(s, 0, i + 1);
@@ -126,6 +137,6 @@ string RequestConstructor::getHostname(std::multimap<string, string> &headers)
 string RequestConstructor::getIp(mg_connection *conn)
 {
 	char buff[128];
-	mg_conn_addr_to_str(conn, buff, 128, MG_SOCK_STRINGIFY_REMOTE);
+	mg_conn_addr_to_str(conn, buff, 128, MG_SOCK_STRINGIFY_IP | MG_SOCK_STRINGIFY_REMOTE);
 	return string(buff);
 }

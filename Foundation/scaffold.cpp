@@ -66,7 +66,7 @@ void scaffold::eventHandler(mg_connection *nc, int ev, void *p)
 	// TODO
 	Request req;
 	req._initialize(nc, ev, p);
-	puts(req.hostname.c_str());
+	puts(req.ip.c_str());
 	mg_send_head(nc, 200, 19, "Content-Type: text/plain");
 	mg_printf(nc, "%s", "Hello, I'm scaffold");
 }

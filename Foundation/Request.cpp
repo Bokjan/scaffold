@@ -20,6 +20,7 @@ void Request::_initialize(mg_connection *nc, int ev, void *p)
 	// ip
 	ip = RequestConstructor::getIp(nc);
 	// xhr
+	xhr = RequestConstructor::determineXhr(headers);
 }
 bool Request::accepts(const string &type)
 {

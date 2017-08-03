@@ -15,7 +15,7 @@ public:
 	std::vector<string> params; // Todo: implement initialization
 	std::map<string, string> query;
 	std::map<string, string> cookies;
-	std::multimap<string, string> headers;
+	std::map<string, string> headers;
 
 	void _initialize(mg_connection *nc, int ev, void *p);
 
