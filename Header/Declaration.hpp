@@ -3,9 +3,19 @@
 #include <ctime>
 #include <string>
 using std::string;
+struct mg_mgr;
+struct mg_connection;
 enum class HttpMethod
 {
-
+	GET,
+	HEAD,
+	POST,
+	PUT,
+	DELETE,
+	TRACE,
+	OPTIONS,
+	CONNECT,
+	ERROR
 };
 struct Cookie
 {
@@ -14,6 +24,7 @@ struct Cookie
 	time_t  expires;
 	int     maxAge;
 	bool    secure;
+	bool    http;
 	string  path;
 	// TODO: Default values
 };

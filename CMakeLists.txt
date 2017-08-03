@@ -1,17 +1,24 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 PROJECT(scaffold)
 
-SET(CMAKE_CXX_STANDARD 14)
+SET(CMAKE_CXX_STANDARD 11)
 
 SET(CMAKE_CXX_FLAGS "-Wall")
 
 ADD_DEFINITIONS(-DDEBUG)
-FIND_PACKAGE(OpenSSL REQUIRED)
-INCLUDE_DIRECTORIES(Dependency Header ${OPENSSL_INCLUDE_DIR})
+INCLUDE_DIRECTORIES(Dependency Header)
+
+# SSL support
+IF(ENABLE_SSL)
+	ADD_DEFINITIONS(-DMG_ENABLE_SSL=1)
+	FIND_PACKAGE(OpenSSL REQUIRED)
+	INCLUDE_DIRECTORIES(${OPENSSL_INCLUDE_DIR})
+ENDIF()
 
 SET(SOURCE_FILES
     Dependency/mongoose/mongoose.c
-    Foundation/scaffold.cpp Foundation/Request.cpp Foundation/Response.cpp)
+    Foundation/scaffold.cpp Foundation/Request.cpp Foundation/Response.cpp
+    Utility/HttpStatusMapping.cpp Utility/RequestConstructor.cpp)
 
 ADD_LIBRARY(scaffold_static STATIC ${SOURCE_FILES})
 SET_TARGET_PROPERTIES(scaffold_static PROPERTIES OUTPUT_NAME "scaffold")

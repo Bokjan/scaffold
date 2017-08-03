@@ -12,10 +12,12 @@ public:
 	string path;
 	string hostname;
 	HttpMethod method;
-	std::vector<string> params;
+	std::vector<string> params; // Todo: implement initialization
 	std::map<string, string> query;
 	std::map<string, string> cookies;
-	std::map<string, string> headers;
+	std::multimap<string, string> headers;
+
+	void _initialize(mg_connection *nc, int ev, void *p);
 
 	bool accepts(const string &type);
 	bool accepts(const std::vector<string> &types);

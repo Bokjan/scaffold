@@ -1,6 +1,8 @@
 #include <cstdio>
 #include <cstring>
 #include <stdexcept>
+#include "Request.hpp"
+#include "Response.hpp"
 #include "scaffold.hpp"
 #include "mongoose/mongoose.h"
 scaffold::scaffold(void)
@@ -22,10 +24,12 @@ scaffold& scaffold::getReference(void)
 	static scaffold instance;
 	return instance;
 }
+#if MG_ENABLE_SSL
 void scaffold::setSSL(string cert, string key)
 {
 	sslCert = cert, sslKey = key;
 }
+#endif
 void scaffold::listen(int _port, bool ssl)
 {
 #if MG_ENABLE_SSL
@@ -57,5 +61,12 @@ void scaffold::listen(int _port, bool ssl)
 }
 void scaffold::eventHandler(mg_connection *nc, int ev, void *p)
 {
+	if(ev != MG_EV_HTTP_REQUEST)
+		return;
 	// TODO
+	Request req;
+	req._initialize(nc, ev, p);
+	puts(req.hostname.c_str());
+	mg_send_head(nc, 200, 19, "Content-Type: text/plain");
+	mg_printf(nc, "%s", "Hello, I'm scaffold");
 }
