@@ -3,7 +3,7 @@
 #include <map>
 #include "Declaration.hpp"
 #include "mongoose/mongoose.h"
-class RequestConstructor
+class RequestHelper
 {
 public:
 	static HttpMethod determineMethod(mg_str method);

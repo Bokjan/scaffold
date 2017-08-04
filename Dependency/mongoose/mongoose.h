@@ -23,7 +23,11 @@
 #ifndef CS_MONGOOSE_SRC_COMMON_H_
 #define CS_MONGOOSE_SRC_COMMON_H_
 
+#ifndef CMAKE_SYSTEM_NAME
 #define MG_VERSION "6.7"
+#else
+#define MG_VERSION "6.7 (" CMAKE_SYSTEM_NAME ")"
+#endif
 
 /* Local tweaks, applied before any of Mongoose's own headers. */
 #ifdef MG_LOCALS

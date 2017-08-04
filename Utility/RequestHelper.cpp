@@ -1,13 +1,13 @@
 #include <cstring>
-#include "RequestConstructor.hpp"
-bool RequestConstructor::determineXhr(std::map<string, string> &headers)
+#include "RequestHelper.hpp"
+bool RequestHelper::determineXhr(std::map<string, string> &headers)
 {
 	auto xhr = headers.find("X-Requested-With");
 	if(xhr == headers.end())
 		return false;
 	return xhr->second == "XMLHttpRequest";
 }
-HttpMethod RequestConstructor::determineMethod(mg_str mg_method)
+HttpMethod RequestHelper::determineMethod(mg_str mg_method)
 {
 	auto ret = HttpMethod::ERROR;
 	string method(mg_method.p, mg_method.len);
@@ -29,7 +29,7 @@ HttpMethod RequestConstructor::determineMethod(mg_str mg_method)
 		ret = HttpMethod::CONNECT;
 	return ret;
 }
-void RequestConstructor::buildHeaders(std::map<string, string> &headers,
+void RequestHelper::buildHeaders(std::map<string, string> &headers,
                                       mg_str *k, mg_str *v)
 {
 	for(int i = 0; k[i].p != nullptr && i < MG_MAX_HTTP_HEADERS; ++i)
@@ -42,7 +42,7 @@ void RequestConstructor::buildHeaders(std::map<string, string> &headers,
 			headers.insert(std::make_pair(key, string(v[i].p, v[i].len)));
 	}
 }
-void RequestConstructor::parseCookies(std::map<string, string> &cookies,
+void RequestHelper::parseCookies(std::map<string, string> &cookies,
                                       const std::map<string, string> &headers)
 {
 	auto f = headers.find("Cookie");
@@ -70,7 +70,7 @@ void RequestConstructor::parseCookies(std::map<string, string> &cookies,
 		cookies[k] = v;
 	}
 }
-void RequestConstructor::parseQuery(std::map<string, string> &query, mg_str q)
+void RequestHelper::parseQuery(std::map<string, string> &query, mg_str q)
 {
 	int i = 0, len = (int)q.len;
 	const char *s = q.p;
@@ -103,11 +103,11 @@ const static char _hexMap[] =
 	"\xA\xB\xC\xD\xE\xF"
 	"00000000000000000000000000"
 	"\xA\xB\xC\xD\xE\xF";
-string RequestConstructor::convertUrlEscapeSequence(const string &s)
+string RequestHelper::convertUrlEscapeSequence(const string &s)
 {
 	string ret;
-	auto len = s.length();
-	for(auto i = 0; i < len; ++i)
+	auto len = (int)s.length();
+	for(int i = 0; i < len; ++i)
 	{
 		if(s[i] == '+')
 			ret.push_back(' ');
@@ -123,20 +123,21 @@ string RequestConstructor::convertUrlEscapeSequence(const string &s)
 	}
 	return ret;
 }
-string RequestConstructor::getHostname(std::map<string, string> &headers)
+string RequestHelper::getHostname(std::map<string, string> &headers)
 {
 	string ret;
 	auto f = headers.find("Host");
 	if(f == headers.end())
 		return "";
 	auto &s = f->second;
-	auto i = s.length() - 1;
-	while(s[i--] != ':');
-	return string(s, 0, i + 1);
+	int i = (int)s.length() - 1;
+	while(s[i] != ':' && i >= 0)
+		--i;
+	return i == 0 ? s : string(s, 0, (unsigned long)(i + 1));
 }
-string RequestConstructor::getIp(mg_connection *conn)
+string RequestHelper::getIp(mg_connection *conn)
 {
-	char buff[128];
-	mg_conn_addr_to_str(conn, buff, 128, MG_SOCK_STRINGIFY_IP | MG_SOCK_STRINGIFY_REMOTE);
+	char buff[64];
+	mg_conn_addr_to_str(conn, buff, 63, MG_SOCK_STRINGIFY_IP | MG_SOCK_STRINGIFY_REMOTE);
 	return string(buff);
 }
