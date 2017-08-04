@@ -1,5 +1,6 @@
 #include <map>
 #include <cctype>
+#include <cstring>
 #include <algorithm>
 #include "Utility.hpp"
 #include "ResponseHelper.hpp"
