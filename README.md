@@ -25,9 +25,20 @@ Firstly, we need to build the `scaffold` library.
    mkdir build && cd build
    ```
    All the following commands run under `/path/to/scaffold/build`.
-3. Run CMake to configure the project. Note that `OpenSSL` is required, if your environment cannot automatically provide this, you need to specify the paths (following is an example).
+3. Run CMake to configure the project.
    ```bash
-   cmake -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl -DOPENSSL_INCLUDE_DIR=/usr/local/opt/openssl/include -DOPENSSL_LIBRARIES=/usr/local/opt/openssl/lib ..
+   cmake .. -DCMAKE_BUILD_TYPE=RELEASE
+   ```
+   If you need HTTPS support, add a definition when configuring.
+   ```bash
+   cmake .. -DENABLE_SSL=1
+   ```
+   Note that `OpenSSL` is required (by `Mongoose`). If your environment cannot automatically provide this, you need to specify the paths (following is an example).
+   ```bash
+   cmake .. -DENABLE_SSL=1 \
+            -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl \
+            -DOPENSSL_LIBRARIES=/usr/local/opt/openssl/lib \
+            -DOPENSSL_INCLUDE_DIR=/usr/local/opt/openssl/include
    ```
    You can set environment variables. For example, you specify `clang++` as the C++ compiler by setting the `CXX` environment variable as following:
    ```bash
@@ -35,7 +46,7 @@ Firstly, we need to build the `scaffold` library.
    ```
    You can specify the root directory where program files will install by defining `CMAKE_INSTALL_PREFIX` (default: `/usr/local`). If you would like to install `scaffold` in `/home/bokjan/install`, run:
    ```bash
-   cmake -DCMAKE_INSTALL_PREFIX=/home/bokjan/install ..
+   cmake .. -DCMAKE_INSTALL_PREFIX=/home/bokjan/install
    ```
 
 4. Build and install.
@@ -44,8 +55,9 @@ Firstly, we need to build the `scaffold` library.
    ```
    Add `VERBOSE=1` to display the programs invoked by `make`: `VERBOSE=1 make`.
 
-After running `make install`, library (both static and dynamic) and headers are installed. You can build web applications with `scaffold` now.
+After running `make install`, library (both static and dynamic) and headers are installed. You can build web applications with `scaffold` now. Usually, you don't need to manually specify library informations if you use default install configuration.
 
+Following are some demonstrations of specifying the path:
 - Using command line (dynamic linking)
     ```bash
     g++ -o app app.cpp -I/path/to/headers -L/path/to/libraries -lscaffold
@@ -65,4 +77,4 @@ After running `make install`, library (both static and dynamic) and headers are 
     ```
 
 # Miscellaneous
-- License: GNU General Public License v2.0 (due to mongoose)
+- License: GNU General Public License v2.0

@@ -20,7 +20,8 @@ SET(SOURCE_FILES
     Dependency/mongoose/mongoose.c
     Foundation/scaffold.cpp Foundation/Request.cpp Foundation/Response.cpp
     Utility/HttpStatusMapping.cpp Utility/RequestHelper.cpp
-    Utility/StringOperation.cpp Utility/ResponseHelper.cpp Utility/MimeTypeMapping.cpp)
+    Utility/StringOperation.cpp Utility/ResponseHelper.cpp
+    Utility/MimeTypeMapping.cpp Utility/DateTimeHelper.cpp)
 
 #ADD_LIBRARY(scaffold_static STATIC ${SOURCE_FILES})
 #SET_TARGET_PROPERTIES(scaffold_static PROPERTIES OUTPUT_NAME "scaffold")

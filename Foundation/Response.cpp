@@ -1,6 +1,7 @@
 #include <cctype>
 #include <cstring>
 #include <algorithm>
+#include "scaffold.hpp"
 #include "Response.hpp"
 #include "mongoose/mongoose.h"
 #include "../Utility/Utility.hpp"
@@ -9,7 +10,7 @@ Response::Response(mg_connection *c):
 	conn(c), statusCode(200), _headersSent(false),
 	_contentEnded(false)
 {
-	headers.insert(std::make_pair("Content-Type", "text/html"));
+	headers.insert(std::make_pair("Content-Type", "text/html; charset=utf-8"));
 }
 Response::~Response(void)
 {
@@ -89,7 +90,12 @@ Response* Response::vary(const string &value, bool _x)
 {
 	return &vary(value);
 }
-//void Response::sendStatus(int code)
+void Response::sendStatus(int code)
+{
+	const auto &f = HttpStatusDesc.find(code);
+	if(f != HttpStatusDesc.end())
+		status(code).send(f->second);
+}
 void Response::send(const string &content)
 {
 	send(content.c_str(), (int)content.length());
@@ -105,7 +111,7 @@ void Response::send(const char *content, int len)
 	mg_send_http_chunk(conn, content, (size_t)len);
 }
 const static char STATIC_HEADERS[] =
-	"X-Powered-By: scaffold\r\n"
+	"X-Powered-By: scaffold " SCAFFOLD_VERSION_STRING "\r\n"
 	"Transfer-Encoding: chunked\r\n";
 void Response::sendHeader(void) // Transfer-Encoding: chunked
 {
