@@ -15,7 +15,7 @@ enum class HttpMethod
 	TRACE,
 	OPTIONS,
 	CONNECT,
-	ERROR
+	NOTIMPLEMENTED
 };
 struct Cookie
 {

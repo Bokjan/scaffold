@@ -3,21 +3,26 @@
 #include <map>
 #include <vector>
 #include "Declaration.hpp"
-class Request;
+struct mg_connection;
 class Response
 {
 private:
-	Request *req;
+	mg_connection *conn;
 
 	int  statusCode;
 	bool _headersSent;
+	bool _contentEnded;
 	std::map<string, Cookie> cookies;
 	std::map<string, string> headers;
+
+	void sendHeader(void);
+
 public:
 	std::map<string, string> locals;
 
-	Response(void):
-		statusCode(500), _headersSent(false) { }
+	Response(void) = delete;
+	Response(mg_connection *c);
+	~Response(void);
 	bool headersSent(void);
 	void type(const string &type);
 	string get(const string &key);
@@ -36,7 +41,8 @@ public:
 	Response& vary(const string &value);
 	Response* vary(const string &value, bool);
 	void sendStatus(int code);
-	void send(const string &value);
+	void send(const string &content);
+	void send(const char *content, int len = -1);
 	void end(void);
 };
 #endif //SCAFFOLD_RESPONSE_HPP

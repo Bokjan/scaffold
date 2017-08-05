@@ -2964,7 +2964,7 @@ struct {								\
 #endif
 
 #ifndef MG_ENABLE_EXTRA_ERRORS_DESC
-#define MG_ENABLE_EXTRA_ERRORS_DESC 0
+#define MG_ENABLE_EXTRA_ERRORS_DESC 1
 #endif
 
 #endif /* CS_MONGOOSE_SRC_FEATURES_H_ */
@@ -3201,7 +3201,7 @@ int mg_ssl_if_write(struct mg_connection *nc, const void *data, size_t len);
 /* Amalgamated: #include "common/mbuf.h" */
 
 #ifndef MG_VPRINTF_BUFFER_SIZE
-#define MG_VPRINTF_BUFFER_SIZE 100
+#define MG_VPRINTF_BUFFER_SIZE 512
 #endif
 
 #ifdef MG_USE_READ_WRITE
@@ -4810,6 +4810,8 @@ void mg_printf_http_chunk(struct mg_connection *nc, const char *fmt, ...);
  */
 void mg_send_response_line(struct mg_connection *nc, int status_code,
                            const char *extra_headers);
+void mg_send_response_line_s(struct mg_connection *nc, int status_code,
+                             struct mg_str extra_headers);
 
 /*
  * Sends an error response. If reason is NULL, the message will be inferred

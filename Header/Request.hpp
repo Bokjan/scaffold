@@ -3,8 +3,11 @@
 #include <map>
 #include <vector>
 #include "Declaration.hpp"
+struct mg_connection;
 class Request
 {
+private:
+	mg_connection *conn;
 public:
 	bool xhr;
 	string ip;
@@ -17,6 +20,7 @@ public:
 	std::map<string, string> cookies;
 	std::map<string, string> headers;
 
+	Request(void): conn(nullptr) { }
 	void _initialize(mg_connection *nc, int ev, void *p);
 
 	bool is(const string &type);

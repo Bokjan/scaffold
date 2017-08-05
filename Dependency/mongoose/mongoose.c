@@ -6442,7 +6442,7 @@ int mg_get_http_var(const struct mg_str *buf, const char *name, char *dst,
 }
 
 void mg_send_http_chunk(struct mg_connection *nc, const char *buf, size_t len) {
-	char chunk_size[50];
+	char chunk_size[32];
 	int n;
 
 	n = snprintf(chunk_size, sizeof(chunk_size), "%lX\r\n", (unsigned long) len);

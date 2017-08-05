@@ -4,6 +4,8 @@
 void Request::_initialize(mg_connection *nc, int ev, void *p)
 {
 	auto hm = (http_message*)p;
+	// conn
+	conn = nc;
 	// method
 	method = RequestHelper::determineMethod(hm->method);
 	// path
@@ -39,9 +41,9 @@ string Request::get(const string &field)
 	for(auto &i : headers)
 		if(CompareStringsCaseInsensitive(field.c_str(), i.first.c_str()))
 			return i.second;
-	return "";
+	return string();
 }
 string Request::param(const string &name)
 {
-	return "";
+	return string();
 }

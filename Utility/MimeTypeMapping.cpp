@@ -5,7 +5,7 @@
  * RFC-2048 - MIME Part 4: Registration Procedures
  * RFC-2049 - MIME Part 5: Conformance Criteria and Examples
  */
-const std::map<const char * const, const char * const> MimeTable =
+std::map<const char * const, const char * const> MimeTable =
 {
 	{"atom",            "application/atom+xml"},
 	{"xml",             "application/atom+xml"},

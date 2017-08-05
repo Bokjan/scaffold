@@ -9,7 +9,7 @@ bool RequestHelper::determineXhr(std::map<string, string> &headers)
 }
 HttpMethod RequestHelper::determineMethod(mg_str mg_method)
 {
-	auto ret = HttpMethod::ERROR;
+	auto ret = HttpMethod::NOTIMPLEMENTED;
 	string method(mg_method.p, mg_method.len);
 	if(method == "GET")
 		ret = HttpMethod::GET;

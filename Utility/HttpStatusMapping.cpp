@@ -1,7 +1,7 @@
 #include <map>
 #include <string>
 using std::string;
-std::map<int, const string&> HttpStatusDesc =
+std::map<int, const char * const> HttpStatusDesc =
 {
 	{100, "Continue"},
 	{101, "Switching Protocols"},
