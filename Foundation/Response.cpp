@@ -1,14 +1,15 @@
 #include <cctype>
 #include <cstring>
 #include <algorithm>
-#include "scaffold.hpp"
+#include "Request.hpp"
 #include "Response.hpp"
+#include "scaffold.hpp"
 #include "mongoose/mongoose.h"
 #include "../Utility/Utility.hpp"
 #include "../Utility/ResponseHelper.hpp"
-Response::Response(mg_connection *c):
-	conn(c), statusCode(200), _headersSent(false),
-	_contentEnded(false)
+Response::Response(Request *r, http_message *h, mg_connection *c):
+	req(r), hm(h), conn(c), statusCode(200),
+	_typeSet(false), _headersSent(false), _contentEnded(false)
 {
 	headers.insert(std::make_pair("Content-Type", "text/html; charset=utf-8"));
 }
@@ -27,6 +28,7 @@ void Response::type(const string &type)
 		headers["Content-Type"] = type;
 	else
 		headers["Content-Type"] = ResponseHelper::mimeLookup(type);
+	_typeSet = true;
 }
 string Response::get(const string &key)
 {
@@ -61,10 +63,50 @@ void Response::clearCookie(const string &name)
 	if(f != cookies.end())
 		cookies.erase(f);
 }
-//void Response::download(const string &file, string name = "")
+void Response::download(const string &file, const string &name)
+{
+	string mime;
+	auto ct = headers.find("Content-Type");
+	mime = ct != headers.end() ?
+	       ct->second : "application/octet-stream";
+	// Specify the `Content-Disposition` header
+	set("Content-Disposition", "filename=" + name);
+	// Erase the `Content-Type`
+	headers.erase(headers.find("Content-Type"));
+	if(!_typeSet)
+	{
+		// Determine the suffix of the file
+		auto i = file.length() - 1;
+		for( ; i != 0; --i)
+			if(file[i] == '.')
+				break;
+		// Get the MIME according to the suffix
+		mime = ResponseHelper::mimeLookup(file.c_str() + i + 1);
+	}
+	auto extraHeaders = expandHeader();
+	_contentEnded = true;
+	puts(extraHeaders.c_str());
+	mg_http_serve_file(conn, hm, file.c_str(), {mime.c_str(), mime.length()},
+	                   {extraHeaders.c_str(), extraHeaders.length() - 2}); // Remove the CRLF
+}
 //void Response::link(const string &rel, const string &link)
 //void Response::location(const string &path)
-//void Response::redirect(const string &path, int status = 302)
+void Response::redirect(string location, int status)
+{
+	if(HttpStatusDesc.find(status) == HttpStatusDesc.end())
+		status = 302;
+	// A back redirection redirects the request
+	// back to the referer, defaulting to / when the referer is missing.
+	if(location == "back")
+	{
+		auto f = req->headers.find("Referer");
+		location = f == req->headers.end() ? "/" : f->second;
+	}
+	auto extraHeaders = expandHeader();
+	_contentEnded = true;
+	mg_http_send_redirect(conn, status, {location.c_str(), location.length()},
+	                      {extraHeaders.c_str(), extraHeaders.length()});
+}
 //void Response::render(const string &view, std::map<string, string> vars = {})
 Response& Response::status(int code)
 {
@@ -117,24 +159,26 @@ void Response::sendHeader(void) // Transfer-Encoding: chunked
 {
 	if(_headersSent)
 		return;
+	_headersSent = true;
 	// Send response line, `Server` and `Transfer-Encoding`
 	mg_printf(conn, "HTTP/1.1 %d %s\r\nServer: %s\r\n",
 		statusCode, HttpStatusDesc.at(statusCode),	"Mongoose/" MG_VERSION);
 	mg_send(conn, STATIC_HEADERS, sizeof(STATIC_HEADERS) - 1);
+	string buff = expandHeader() += "\r\n"; // Add CRLF
+	mg_send(conn, buff.c_str(), (int)buff.length());
+}
+string Response::expandHeader(void)
+{
 	string buff; // Extra headers' buffer
 	// Expand headers
 	for(const auto &i : headers)
 		buff += i.first + ": " + i.second + "\r\n";
 	// Todo: expand cookies
-
-	// Add CR LF
-	buff += "\r\n";
-	mg_send(conn, buff.c_str(), (int)buff.length());
-	_headersSent = true;
+	return buff;
 }
 void Response::end(void)
 {
+	_contentEnded = true;
 	// Send a zero-length chunk
 	mg_send(conn, "0\r\n\r\n", 5);
-	_contentEnded = true;
 }

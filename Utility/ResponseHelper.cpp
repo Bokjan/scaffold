@@ -10,5 +10,5 @@ string ResponseHelper::mimeLookup(string t)
 	for(auto &i : MimeTable)
 		if(strcmp(i.first, t.c_str()) == 0)
 			return i.second;
-	return "text/plain";
+	return "application/octet-stream";
 }

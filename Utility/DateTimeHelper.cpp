@@ -41,21 +41,23 @@ time_t HttpDateStringToTimestamp(const char *str)
 	sscanf(str + 5, "%d %s %d %d:%d:%d", &d, month, &y, &h, &i, &s);
 	m = StringMonthToInt(month) - 1;
 	y -= 1900;
+	// Put these fields in order to prevent
+	// `non-trivial designated initializers not supported`
 	tm stm =
 	{
-		.tm_year = y,
-		.tm_mon  = m,
-		.tm_mday = d,
-		.tm_hour = h,
+		.tm_sec  = s,
 		.tm_min  = i,
-		.tm_sec  = s
+		.tm_hour = h,
+		.tm_mday = d,
+		.tm_mon  = m,
+		.tm_year = y
 	};
 	return mktime(&stm);
 };
 string TimestampToHttpDateString(time_t time)
 {
-	char buff[256];
+	char buff[64];
 	tm *stm = gmtime(&time);
-	strftime(buff, 256, "%a, %d %b %Y %T", stm);
+	strftime(buff, 64, "%a, %d %b %Y %T GMT", stm);
 	return string(buff);
 }

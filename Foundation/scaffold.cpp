@@ -5,8 +5,16 @@
 #include "Response.hpp"
 #include "scaffold.hpp"
 #include "mongoose/mongoose.h"
+static int sig_num = 0;
+static void signal_handler(int sig)
+{
+	sig_num = sig;
+	fprintf(stderr, "Signal %d received...\n", sig);
+}
 scaffold::scaffold(void)
 {
+	signal(SIGINT, signal_handler);
+	signal(SIGTERM, signal_handler);
 	mgr = (mg_mgr*)malloc(sizeof(mg_mgr));
 	mg_mgr_init(mgr, nullptr);
 }
@@ -56,7 +64,7 @@ void scaffold::listen(int _port, bool ssl)
 	if(conn == nullptr)
 		throw std::runtime_error("listen on port failed");
 	mg_set_protocol_http_websocket(conn);
-	for( ; ;)
+	while(sig_num == 0)
 		mg_mgr_poll(mgr, 1000);
 }
 void scaffold::eventHandler(mg_connection *nc, int ev, void *p)
@@ -66,6 +74,6 @@ void scaffold::eventHandler(mg_connection *nc, int ev, void *p)
 	// TODO
 	Request req;
 	req._initialize(nc, ev, p);
-	Response res(nc);
-	res.status(200).send("2333");
+	Response res(&req, (http_message*)p, nc);
+	res.sendStatus(200);
 }
