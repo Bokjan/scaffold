@@ -10,7 +10,7 @@ I use macOS 10.12.5 for developing and Fedora 25 for testing. With the help of [
 
 # Dependencies
 - [cesanta/mongoose](https://github.com/cesanta/mongoose)
-- [openssl/openssl](https://github.com/openssl/openssl)
+- [openssl/openssl](https://github.com/openssl/openssl) (optional)
 
 # How to use
 Firstly, we need to build the `scaffold` library.

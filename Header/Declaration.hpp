@@ -20,12 +20,14 @@ enum class HttpMethod
 struct Cookie
 {
 	string  value;
-	string  domain;
 	time_t  expires;
 	int     maxAge;
-	bool    secure;
-	bool    http;
 	string  path;
-	// TODO: Default values
+	string  domain;
+	bool    secure;
+	bool    httpOnly;
+	Cookie(void):
+		expires(0), maxAge(0),
+		secure(false), httpOnly(false) { }
 };
 #endif //SCAFFOLD_DECLARATION_HPP

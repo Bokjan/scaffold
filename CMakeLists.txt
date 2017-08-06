@@ -23,7 +23,7 @@ SET(SOURCE_FILES
     Utility/StringOperation.cpp Utility/ResponseHelper.cpp
     Utility/MimeTypeMapping.cpp Utility/DateTimeHelper.cpp)
 
-#ADD_LIBRARY(scaffold_static STATIC ${SOURCE_FILES})
+#ADD_LIBRARY(scaffold_static STATIhttps://github.com/greatfire/fbc/issues/2C ${SOURCE_FILES})
 #SET_TARGET_PROPERTIES(scaffold_static PROPERTIES OUTPUT_NAME "scaffold")
 #SET_TARGET_PROPERTIES(scaffold_static PROPERTIES CLEAN_DIRECT_OUTPUT 1)
 

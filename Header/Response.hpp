@@ -34,11 +34,11 @@ public:
 	void set(const string &key, const string &value);
 	void header(const string &key, const string &value);
 	void cookie(const string &name, const string &value);
-	void cookie(const string &name, const Cookie &cookie);
+	void cookie(const string &name, const Cookie &_cookie);
 	void clearCookie(const string &name);
 	void download(const string &file, const string &name);
 	void link(const string &rel, const string &link);
-	void location(const string &path);
+	void location(string path);
 	void redirect(string location, int status = 302);
 	void render(const string &view, std::map<string, string> vars = {});
 	Response& status(int code);

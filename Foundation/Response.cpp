@@ -55,8 +55,16 @@ void Response::header(const string &key, const string &value)
 {
 	headers[key] = value;
 }
-//void Response::cookie(const string &name, const string &value)
-//void Response::cookie(const string &name, const Cookie &cookie)
+void Response::cookie(const string &name, const string &value)
+{
+	Cookie c;
+	c.value = value;
+	cookies[name] = c;
+}
+void Response::cookie(const string &name, const Cookie &c)
+{
+	cookies[name] = c;
+}
 void Response::clearCookie(const string &name)
 {
 	auto f = cookies.find(name);
@@ -85,12 +93,28 @@ void Response::download(const string &file, const string &name)
 	}
 	auto extraHeaders = expandHeader();
 	_contentEnded = true;
-	puts(extraHeaders.c_str());
 	mg_http_serve_file(conn, hm, file.c_str(), {mime.c_str(), mime.length()},
 	                   {extraHeaders.c_str(), extraHeaders.length() - 2}); // Remove the CRLF
 }
-//void Response::link(const string &rel, const string &link)
-//void Response::location(const string &path)
+void Response::link(const string &rel, const string &link)
+{
+	string line = "<";
+	line += link + ">; rel=\"" + rel + "\"";
+	auto f = headers.find("Link");
+	if(f == headers.end())
+		headers.insert(std::make_pair("Link", line));
+	else
+		f->second += ", " + line;
+}
+void Response::location(string path)
+{
+	if(path == "back")
+	{
+		auto f = req->headers.find("Referer");
+		path = f == req->headers.end() ? "/" : f->second;
+	}
+	set("Location", path);
+}
 void Response::redirect(string location, int status)
 {
 	if(HttpStatusDesc.find(status) == HttpStatusDesc.end())
@@ -102,6 +126,7 @@ void Response::redirect(string location, int status)
 		auto f = req->headers.find("Referer");
 		location = f == req->headers.end() ? "/" : f->second;
 	}
+	location = UtilUrlEncode(location);
 	auto extraHeaders = expandHeader();
 	_contentEnded = true;
 	mg_http_send_redirect(conn, status, {location.c_str(), location.length()},
@@ -170,10 +195,30 @@ void Response::sendHeader(void) // Transfer-Encoding: chunked
 string Response::expandHeader(void)
 {
 	string buff; // Extra headers' buffer
+	char cbuff[64];
 	// Expand headers
 	for(const auto &i : headers)
 		buff += i.first + ": " + i.second + "\r\n";
-	// Todo: expand cookies
+	// Expand cookies
+	for(const auto &i : cookies)
+	{
+		buff += "Set-Cookie: " + i.first + "=" + i.second.value;
+		if(i.second.expires != 0 && i.second.maxAge == 0)
+			sprintf(cbuff, "%ld", i.second.expires),
+					buff += "; expires=", buff += cbuff;
+		if(i.second.maxAge != 0)
+			sprintf(cbuff, "%d", i.second.maxAge),
+			buff += "; Max-Age=", buff += cbuff;
+		if(!i.second.path.empty())
+			buff += "; path=" + i.second.path;
+		if(!i.second.domain.empty())
+			buff += "; domain=" + i.second.path;
+		if(i.second.secure)
+			buff += "; secure";
+		if(i.second.httpOnly)
+			buff += "; HttpOnly";
+		buff += "\r\n";
+	}
 	return buff;
 }
 void Response::end(void)
