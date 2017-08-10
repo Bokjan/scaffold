@@ -38,4 +38,5 @@ public:
 	void options(string path, callback_t callback);
 	void connect(string path, callback_t callback);
 };
+auto Scaffold = [](){ return scaffold::getReference(); };
 #endif //SCAFFOLD_SCAFFOLD_HPP

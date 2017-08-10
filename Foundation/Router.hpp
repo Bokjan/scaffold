@@ -14,7 +14,7 @@ namespace scaf
 	private:
 		std::vector<std::pair<string, callback_t>> callbacks[8];
 	public:
-		void registerCallback(int method, string &path, callback_t &callback);
+		void registerCallback(int method, string path, callback_t callback);
 		std::pair<string, callback_t> fetchCallbacks(HttpMethod method, string path);
 	};
 	extern Router router;
