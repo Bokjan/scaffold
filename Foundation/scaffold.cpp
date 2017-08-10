@@ -1,10 +1,13 @@
 #include <cstdio>
 #include <cstring>
 #include <stdexcept>
+#include "Router.hpp"
 #include "Request.hpp"
 #include "Response.hpp"
 #include "scaffold.hpp"
 #include "mongoose/mongoose.h"
+#include "../Utility/RequestHelper.hpp"
+using scaf::router;
 static int sig_num = 0;
 static void signal_handler(int sig)
 {
@@ -67,13 +70,69 @@ void scaffold::listen(int _port, bool ssl)
 	while(sig_num == 0)
 		mg_mgr_poll(mgr, 1000);
 }
+mg_str cb(mg_connection *c, mg_str file_name) {
+
+	return file_name;
+}
 void scaffold::eventHandler(mg_connection *nc, int ev, void *p)
 {
-	if(ev != MG_EV_HTTP_REQUEST)
-		return;
-	// TODO
-	Request req;
-	req._initialize(nc, ev, p);
-	Response res(&req, (http_message*)p, nc);
-	res.sendStatus(200);
+	// Todo: finish this method
+	switch(ev)
+	{
+		case MG_EV_HTTP_REQUEST:
+		{
+			Request req;
+			req._initialize(nc, ev, p);
+			Response res(&req, (http_message*)p, nc);
+			// match.first -> pattern, match.second -> callback
+			auto match = router.fetchCallbacks(req.method, req.path);
+			RequestHelper::parseParams(req.params, req.path, match.first);
+			match.second(req, res);
+			break;
+		}
+		case MG_EV_HTTP_PART_BEGIN:
+		case MG_EV_HTTP_PART_DATA:
+		case MG_EV_HTTP_PART_END:
+
+			break;
+		default:;
+	}
+
+}
+void scaffold::all(string path, callback_t callback)
+{
+	for(int i = 0; i < 8; ++i)
+		router.registerCallback(i, path, callback);
+}
+void scaffold::head(string path, callback_t callback)
+{
+	router.registerCallback(static_cast<int>(HttpMethod::HEAD), path, callback);
+}
+void scaffold::get(string path, callback_t callback)
+{
+	router.registerCallback(static_cast<int>(HttpMethod::GET), path, callback);
+}
+void scaffold::post(string path, callback_t callback)
+{
+	router.registerCallback(static_cast<int>(HttpMethod::POST), path, callback);
+}
+void scaffold::put(string path, callback_t callback)
+{
+	router.registerCallback(static_cast<int>(HttpMethod::PUT), path, callback);
+}
+void scaffold::DELETE(string path, callback_t callback)
+{
+	router.registerCallback(static_cast<int>(HttpMethod::DELETE), path, callback);
+}
+void scaffold::trace(string path, callback_t callback)
+{
+	router.registerCallback(static_cast<int>(HttpMethod::TRACE), path, callback);
+}
+void scaffold::options(string path, callback_t callback)
+{
+	router.registerCallback(static_cast<int>(HttpMethod::OPTIONS), path, callback);
+}
+void scaffold::connect(string path, callback_t callback)
+{
+	router.registerCallback(static_cast<int>(HttpMethod::CONNECT), path, callback);
 }

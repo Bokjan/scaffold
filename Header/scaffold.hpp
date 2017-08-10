@@ -27,5 +27,15 @@ public:
 #endif
 
 	void listen(int port, bool ssl = false);
+
+	void all    (string path, callback_t callback);
+	void head   (string path, callback_t callback);
+	void get    (string path, callback_t callback);
+	void post   (string path, callback_t callback);
+	void put    (string path, callback_t callback);
+	void DELETE (string path, callback_t callback);
+	void trace  (string path, callback_t callback);
+	void options(string path, callback_t callback);
+	void connect(string path, callback_t callback);
 };
 #endif //SCAFFOLD_SCAFFOLD_HPP

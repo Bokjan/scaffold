@@ -15,8 +15,8 @@ public:
 	string path;
 	string hostname;
 	HttpMethod method;
-	std::vector<string> params; // Todo: implement initialization
 	std::map<string, string> query;
+	std::map<string, string> params; // Todo: implement initialization
 	std::map<string, string> cookies;
 	std::map<string, string> headers;
 

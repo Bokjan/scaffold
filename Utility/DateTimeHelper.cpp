@@ -28,11 +28,11 @@ static int StringMonthToInt(const char *m)
 		ret = 12;
 	return ret;
 }
-time_t HttpDateStringToTimestamp(string str)
+time_t scaf::HttpDateStringToTimestamp(string str)
 {
 	return HttpDateStringToTimestamp(str.c_str());
 }
-time_t HttpDateStringToTimestamp(const char *str)
+time_t scaf::HttpDateStringToTimestamp(const char *str)
 {
 	// RFC 7231, Page 64
 	// Example: Sun, 06 Nov 1994 08:49:37 GMT
@@ -54,7 +54,7 @@ time_t HttpDateStringToTimestamp(const char *str)
 	};
 	return mktime(&stm);
 };
-string TimestampToHttpDateString(time_t time)
+string scaf::TimestampToHttpDateString(time_t time)
 {
 	char buff[64];
 	tm *stm = gmtime(&time);

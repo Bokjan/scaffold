@@ -2,12 +2,16 @@
 #define SCAFFOLD_DECLARATION_HPP
 #include <ctime>
 #include <string>
+#include <functional>
 using std::string;
 struct mg_mgr;
 struct mg_connection;
-enum class HttpMethod
+class Request;
+class Response;
+using callback_t = std::function<void(Request&, Response&)>;
+enum class HttpMethod : int
 {
-	GET,
+	GET = 0,
 	HEAD,
 	POST,
 	PUT,

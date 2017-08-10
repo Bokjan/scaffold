@@ -1,11 +1,12 @@
 #include <map>
+#include "Utility.hpp"
 /* RFC-2045 - MIME Part 1: Format of Internet Message Bodies
  * RFC-2046 - MIME Part 2: Media Types
  * RFC-2047 - MIME Part 3: Header Extensions for Non-ASCII Text
  * RFC-2048 - MIME Part 4: Registration Procedures
  * RFC-2049 - MIME Part 5: Conformance Criteria and Examples
  */
-std::map<const char * const, const char * const> MimeTable =
+const std::map<const char * const, const char * const> scaf::MimeTable =
 {
 	{"atom",            "application/atom+xml"},
 	{"xml",             "application/atom+xml"},

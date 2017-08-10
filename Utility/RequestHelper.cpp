@@ -1,5 +1,8 @@
 #include <cstring>
 #include "RequestHelper.hpp"
+#include "../Utility/Utility.hpp"
+using scaf::UrlEncode;
+using scaf::UrlDecode;
 bool RequestHelper::determineXhr(std::map<string, string> &headers)
 {
 	auto xhr = headers.find("X-Requested-With");
@@ -67,6 +70,9 @@ void RequestHelper::parseCookies(std::map<string, string> &cookies,
 		// Read value
 		while(*sit != ';' && sit < s.cend())
 			v.push_back(*sit), ++sit;
+		// Escape
+		k = UrlDecode(k);
+		v = UrlDecode(v);
 		cookies[k] = v;
 	}
 }
@@ -91,37 +97,10 @@ void RequestHelper::parseQuery(std::map<string, string> &query, mg_str q)
 		while(s[i] != '&' && i < len)
 			v.push_back(s[i++]);
 		// Process escape sequence
-		k = convertUrlEscapeSequence(k);
-		v = convertUrlEscapeSequence(v);
+		k = UrlDecode(k);
+		v = UrlDecode(v);
 		query[k] = v;
 	}
-}
-const static char _hexMap[] =
-	"000000000000000000000000000000000000000000000000" // 0~48
-	"\x0\x1\x2\x3\x4\x5\x6\x7\x8\x9"
-	"0000000"
-	"\xA\xB\xC\xD\xE\xF"
-	"00000000000000000000000000"
-	"\xA\xB\xC\xD\xE\xF";
-string RequestHelper::convertUrlEscapeSequence(const string &s)
-{
-	string ret;
-	auto len = (int)s.length();
-	for(int i = 0; i < len; ++i)
-	{
-		if(s[i] == '+')
-			ret.push_back(' ');
-		else if(s[i] == '%')
-		{
-			if(i + 2 >= len)
-				break;
-			ret.push_back((_hexMap[(int)s[i + 1]] << 4) + _hexMap[(int)s[i + 2]]);
-			i += 2;
-		}
-		else
-			ret.push_back(s[i]);
-	}
-	return ret;
 }
 string RequestHelper::getHostname(std::map<string, string> &headers)
 {
@@ -140,4 +119,8 @@ string RequestHelper::getIp(mg_connection *conn)
 	char buff[64];
 	mg_conn_addr_to_str(conn, buff, 63, MG_SOCK_STRINGIFY_IP | MG_SOCK_STRINGIFY_REMOTE);
 	return string(buff);
+}
+void RequestHelper::parseParams(std::map<string, string> &params, string path, string pattern)
+{
+	// Todo
 }

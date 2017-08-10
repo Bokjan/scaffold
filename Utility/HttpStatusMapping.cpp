@@ -1,7 +1,8 @@
 #include <map>
 #include <string>
+#include "Utility.hpp"
 using std::string;
-std::map<int, const char * const> HttpStatusDesc =
+const std::map<int, const char * const> scaf::HttpStatusDesc =
 {
 	{100, "Continue"},
 	{101, "Switching Protocols"},

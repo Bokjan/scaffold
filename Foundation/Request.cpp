@@ -9,7 +9,7 @@ void Request::_initialize(mg_connection *nc, int ev, void *p)
 	// method
 	method = RequestHelper::determineMethod(hm->method);
 	// path
-	path = string(hm->uri.p, hm->uri.len);
+	path = scaf::UrlDecode(string(hm->uri.p, hm->uri.len));
 	// body
 	body = string(hm->body.p, hm->body.len);
 	// headers
@@ -39,7 +39,7 @@ string Request::get(const string &field)
 	if(f != headers.end())
 		return f->second;
 	for(auto &i : headers)
-		if(CompareStringsCaseInsensitive(field.c_str(), i.first.c_str()))
+		if(scaf::CompareStringsCaseInsensitive(field.c_str(), i.first.c_str()))
 			return i.second;
 	return string();
 }
