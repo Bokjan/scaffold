@@ -19,8 +19,8 @@ std::pair<string, callback_t> scaf::Router::fetchCallbacks(HttpMethod method, st
 		{
 			const auto &pattern = item.first;
 			auto blen = pattern.length();
-			decltype(alen) i = 0, j = 0;
-			for( ; i < alen && j < blen; ++i, ++j)
+			string::size_type i = 0, j = 0;
+			for( ; i < alen && j < blen; )
 			{
 				while(path[i] == '/' && path[i + 1] == '/')
 					++i;
@@ -34,6 +34,7 @@ std::pair<string, callback_t> scaf::Router::fetchCallbacks(HttpMethod method, st
 				}
 				if(path[i] != pattern[j])
 					goto CONTINUE;
+				++i, ++j;
 			}
 			if(i == alen && j == blen)
 				return item;

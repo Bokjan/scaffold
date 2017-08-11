@@ -81,7 +81,7 @@ void scaffold::eventHandler(mg_connection *nc, int ev, void *p)
 			Request req;
 			req._initialize(nc, ev, p);
 			Response res(&req, (http_message*)p, nc);
-			// match.first -> pattern, match.second -> callback
+			// match.first => pattern, match.second => callback
 			auto match = router.fetchCallbacks(req.method, req.path);
 			RequestHelper::parseParams(req.params, req.path, match.first);
 			match.second(req, res);
@@ -116,7 +116,7 @@ void scaffold::put(string path, callback_t callback)
 {
 	router.registerCallback(static_cast<int>(HttpMethod::PUT), path, callback);
 }
-void scaffold::DELETE(string path, callback_t callback)
+void scaffold::Delete(string path, callback_t callback)
 {
 	router.registerCallback(static_cast<int>(HttpMethod::DELETE), path, callback);
 }

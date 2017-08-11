@@ -122,5 +122,23 @@ string RequestHelper::getIp(mg_connection *conn)
 }
 void RequestHelper::parseParams(std::map<string, string> &params, string path, string pattern)
 {
-	// Todo
+	auto alen = path.length(), blen = pattern.length();
+	string::size_type i = 0, j = 0;
+	for( ; i < alen && j < blen; )
+	{
+		while(path[i] == '/' && path[i + 1] == '/')
+			++i;
+		if(pattern[j] == ':') // Extract this param
+		{
+			string k, v;
+			++j; // Skip the colon
+			while(pattern[j] != '/' && j < blen)
+				k.push_back(pattern[j]), ++j;
+			while(path[i] != '/' && i < alen)
+				v.push_back(path[i]), ++i;
+			params[k] = v;
+			continue;
+		}
+		++i, ++j;
+	}
 }

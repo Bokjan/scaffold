@@ -20,22 +20,27 @@ SET(SOURCE_FILES
     Dependency/mongoose/mongoose.c
     Foundation/Scaffold.cpp Foundation/Router.cpp
     Foundation/Request.cpp Foundation/Response.cpp
-    Utility/HttpStatusMapping.cpp Utility/RequestHelper.cpp
     Utility/StringOperation.cpp Utility/ResponseHelper.cpp
-    Utility/MimeTypeMapping.cpp Utility/DateTimeHelper.cpp)
+    Utility/MimeTypeMapping.cpp Utility/DateTimeHelper.cpp
+    Utility/HttpStatusMapping.cpp Utility/RequestHelper.cpp)
 
-#ADD_LIBRARY(scaffold_static STATIC ${SOURCE_FILES})
-#SET_TARGET_PROPERTIES(scaffold_static PROPERTIES OUTPUT_NAME "scaffold")
-#SET_TARGET_PROPERTIES(scaffold_static PROPERTIES CLEAN_DIRECT_OUTPUT 1)
+IF(NOT DYNAMIC_ONLY)
+	ADD_LIBRARY(scaffold_static STATIC ${SOURCE_FILES})
+	SET_TARGET_PROPERTIES(scaffold_static PROPERTIES OUTPUT_NAME "scaffold")
+	SET_TARGET_PROPERTIES(scaffold_static PROPERTIES CLEAN_DIRECT_OUTPUT 1)
+ENDIF()
 
 ADD_LIBRARY(scaffold_shared SHARED ${SOURCE_FILES})
 SET_TARGET_PROPERTIES(scaffold_shared PROPERTIES OUTPUT_NAME "scaffold")
 SET_TARGET_PROPERTIES(scaffold_shared PROPERTIES CLEAN_DIRECT_OUTPUT 1)
 SET_TARGET_PROPERTIES(scaffold_shared PROPERTIES VERSION 0 SOVERSION 0)
 
-#INSTALL(TARGETS scaffold_static scaffold_shared
-#		ARCHIVE DESTINATION lib
-#		LIBRARY DESTINATION lib)
-INSTALL(TARGETS scaffold_shared
-        LIBRARY DESTINATION lib)
+IF(DYNAMIC_ONLY)
+	INSTALL(TARGETS scaffold_shared
+	        LIBRARY DESTINATION lib)
+ELSE()
+	INSTALL(TARGETS scaffold_static scaffold_shared
+			ARCHIVE DESTINATION lib
+			LIBRARY DESTINATION lib)
+ENDIF()
 INSTALL(DIRECTORY Header/ DESTINATION include/scaffold)

@@ -1,5 +1,0 @@
-Env = Environment()
-source_file = ['app.cpp']
-Env.Append(LIBS = ['scaffold'])
-Env.Append(CXXFLAGS = ['-Wall', '-std=c++11', '-g'])
-Env.Program('app', source_file)

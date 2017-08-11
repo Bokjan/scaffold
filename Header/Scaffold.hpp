@@ -33,7 +33,7 @@ public:
 	void get    (string path, callback_t callback);
 	void post   (string path, callback_t callback);
 	void put    (string path, callback_t callback);
-	void DELETE (string path, callback_t callback);
+	void Delete (string path, callback_t callback);
 	void trace  (string path, callback_t callback);
 	void options(string path, callback_t callback);
 	void connect(string path, callback_t callback);
