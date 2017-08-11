@@ -46,7 +46,7 @@ string scaf::UrlDecode(const string &s, bool formUrlEncoded)
 {
 	string ret;
 	auto len = s.length();
-	for(auto i = 0; i < len; ++i)
+	for(decltype(len) i = 0; i < len; ++i)
 	{
 		if(s[i] == '+' && formUrlEncoded)
 			ret.push_back(' ');
