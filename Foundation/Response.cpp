@@ -3,7 +3,7 @@
 #include <algorithm>
 #include "Request.hpp"
 #include "Response.hpp"
-#include "scaffold.hpp"
+#include "Scaffold.hpp"
 #include "mongoose/mongoose.h"
 #include "../Utility/Utility.hpp"
 #include "../Utility/ResponseHelper.hpp"

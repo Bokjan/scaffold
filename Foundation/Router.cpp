@@ -6,7 +6,7 @@ namespace scaf
 }
 void scaf::Router::registerCallback(int method, string path, callback_t callback)
 {
-	callbacks[method].push_back(std::make_tuple(path, callback));
+	callbacks[method].push_back(std::make_pair(path, callback));
 }
 std::pair<string, callback_t> scaf::Router::fetchCallbacks(HttpMethod method, string path)
 {

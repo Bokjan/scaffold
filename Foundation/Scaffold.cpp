@@ -4,7 +4,7 @@
 #include "Router.hpp"
 #include "Request.hpp"
 #include "Response.hpp"
-#include "scaffold.hpp"
+#include "Scaffold.hpp"
 #include "mongoose/mongoose.h"
 #include "../Utility/RequestHelper.hpp"
 using scaf::router;
@@ -23,8 +23,7 @@ scaffold::scaffold(void)
 }
 scaffold::~scaffold(void)
 {
-	mg_mgr_free(mgr);
-	free(mgr);
+
 }
 scaffold* scaffold::getPointer(void)
 {
@@ -69,10 +68,8 @@ void scaffold::listen(int _port, bool ssl)
 	mg_set_protocol_http_websocket(conn);
 	while(sig_num == 0)
 		mg_mgr_poll(mgr, 1000);
-}
-mg_str cb(mg_connection *c, mg_str file_name) {
-
-	return file_name;
+	mg_mgr_free(mgr);
+	free(mgr);
 }
 void scaffold::eventHandler(mg_connection *nc, int ev, void *p)
 {
@@ -97,7 +94,6 @@ void scaffold::eventHandler(mg_connection *nc, int ev, void *p)
 			break;
 		default:;
 	}
-
 }
 void scaffold::all(string path, callback_t callback)
 {

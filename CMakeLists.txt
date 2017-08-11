@@ -18,7 +18,7 @@ ENDIF()
 
 SET(SOURCE_FILES
     Dependency/mongoose/mongoose.c
-    Foundation/scaffold.cpp Foundation/Router.cpp
+    Foundation/Scaffold.cpp Foundation/Router.cpp
     Foundation/Request.cpp Foundation/Response.cpp
     Utility/HttpStatusMapping.cpp Utility/RequestHelper.cpp
     Utility/StringOperation.cpp Utility/ResponseHelper.cpp

@@ -1,16 +1,12 @@
-#include <cstdio>
-#include <cstdlib>
-#include <signal.h>
-#include <scaffold/scaffold.hpp>
-void signal_handler(int sig)
-{
-	fprintf(stderr, "Signal %d received, exiting...", sig);
-	exit(0);
-}
+#include <scaffold/Request.hpp>
+#include <scaffold/Response.hpp>
+#include <scaffold/Scaffold.hpp>
 int main(void)
 {
-	signal(SIGINT, signal_handler);
-	signal(SIGTERM, signal_handler);
-	auto app = scaffold::getReference();
+	auto app = Scaffold();
+	app.get("/", [](Request &req, Response &res)
+	{
+		res.send("It works!");
+	});
 	app.listen(3000);
 }

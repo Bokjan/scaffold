@@ -55,7 +55,7 @@ Firstly, we need to build the `scaffold` library.
    ```
    Add `VERBOSE=1` to display the programs invoked by `make`: `VERBOSE=1 make`.
 
-After running `make install`, library (both static and dynamic) and headers are installed. You can build web applications with `scaffold` now. Usually, you don't need to manually specify library informations if you use default install configuration.
+After running `make install`, library (both static and dynamic) and headers are installed. You can build web applications with `scaffold` now. Make sure the environment variables are configured properly.
 
 Following are some demonstrations of specifying the path:
 - Using command line (dynamic linking)
