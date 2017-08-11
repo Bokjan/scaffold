@@ -142,3 +142,28 @@ void RequestHelper::parseParams(std::map<string, string> &params, string path, s
 		++i, ++j;
 	}
 }
+void RequestHelper::parseWwwFormEncodedPostBody(std::map<string, string> &post, const string &body)
+{
+	string k, v;
+	auto len = body.length();
+	for(decltype(len) i = 0; i < len; ++i)
+	{
+		k.clear(), v.clear();
+		// Skip the concatenateor
+		if(body[i] == '&')
+			continue;
+		// Read key
+		while(body[i] != '=' && i < len)
+			k.push_back(body[i++]);
+		if(i >= len)
+			break;
+		++i; // Skip the '='
+		// Read value
+		while(body[i] != '&' && i < len)
+			v.push_back(body[i++]);
+		// Run URL decode (with `x-www-form-url-encoded`)
+		k = UrlDecode(k, true);
+		v = UrlDecode(v, true);
+		post[k] = v;
+	}
+}

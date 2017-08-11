@@ -15,6 +15,7 @@ public:
 	string path;
 	string hostname;
 	HttpMethod method;
+	std::map<string, string> post;
 	std::map<string, string> query;
 	std::map<string, string> params;
 	std::map<string, string> cookies;

@@ -24,6 +24,8 @@ void Request::_initialize(mg_connection *nc, int ev, void *p)
 	ip = RequestHelper::getIp(nc);
 	// xhr
 	xhr = RequestHelper::determineXhr(headers);
+	// post (application/x-www-form-urlencoded)
+	RequestHelper::parseWwwFormEncodedPostBody(post, body);
 }
 bool Request::is(const string &type)
 {

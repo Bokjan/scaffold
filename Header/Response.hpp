@@ -23,8 +23,6 @@ private:
 	void sendHeader(void);
 	string expandHeader(void);
 public:
-	std::map<string, string> locals;
-
 	Response(void) = delete;
 	Response(Request *r, http_message *h, mg_connection *c);
 	~Response(void);
@@ -40,7 +38,6 @@ public:
 	void link(const string &rel, const string &link);
 	void location(string path);
 	void redirect(string location, int status = 302);
-	void render(const string &view, std::map<string, string> vars = {});
 	Response& status(int code);
 	Response* status(int code, bool);
 	Response& vary(const string &value);
