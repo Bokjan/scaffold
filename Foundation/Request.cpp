@@ -45,7 +45,3 @@ string Request::get(const string &field)
 			return i.second;
 	return string();
 }
-string Request::param(const string &name)
-{
-	return string();
-}

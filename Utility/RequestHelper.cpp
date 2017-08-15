@@ -105,9 +105,12 @@ void RequestHelper::parseQuery(std::map<string, string> &query, mg_str q)
 string RequestHelper::getHostname(std::map<string, string> &headers)
 {
 	string ret;
-	auto f = headers.find("Host");
+	// Determine whether a proxy exists
+	auto f = headers.find("X-Forwarded-Host");
 	if(f == headers.end())
-		return "";
+		f = headers.find("Host");
+	if(f == headers.end())
+		return string();
 	auto &s = f->second;
 	int i = (int)s.length() - 1;
 	while(s[i] != ':' && i >= 0)

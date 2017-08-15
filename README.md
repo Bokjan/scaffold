@@ -9,8 +9,14 @@ To build this project, `cmake`, `make` and a proper C++ compiler is required. Th
 I use macOS 10.12.5 for developing and Fedora 25 for testing. With the help of [cesanta/mongoose](https://github.com/cesanta/mongoose), `scaffold` can run on various operating systems and hardware architectures.
 
 # Dependencies
-- [cesanta/mongoose](https://github.com/cesanta/mongoose)
-- [openssl/openssl](https://github.com/openssl/openssl) (optional)
+- [cesanta/mongoose](https://github.com/cesanta/mongoose) (included in this repo)
+- [miloyip/rapidjson](https://github.com/miloyip/rapidjson) (not included in this repo)
+- [openssl/openssl](https://github.com/openssl/openssl) (optional, not included in this repo)
+
+To solve these dependencies:
+- Mongoose: do nothing.
+- RapidJSON: use package manager, or get the source from GitHub and manually configure it.
+- OpenSSL: use package manager, usually.
 
 # How to use
 Firstly, we need to build the `scaffold` library.
@@ -29,17 +35,12 @@ Firstly, we need to build the `scaffold` library.
    ```bash
    cmake .. -DCMAKE_BUILD_TYPE=RELEASE
    ```
-   If you need HTTPS support, add a definition when configuring.
+   If you don't need HTTPS support, add a definition when configuring.
    ```bash
-   cmake .. -DENABLE_SSL=1
+   cmake .. -DDISABLE_SSL=1
    ```
-   Note that `OpenSSL` is required (by `Mongoose`). If your environment cannot automatically provide this, you need to specify the paths (following is an example).
-   ```bash
-   cmake .. -DENABLE_SSL=1 \
-            -DOPENSSL_ROOT_DIR=/usr/local/opt/openssl \
-            -DOPENSSL_LIBRARIES=/usr/local/opt/openssl/lib \
-            -DOPENSSL_INCLUDE_DIR=/usr/local/opt/openssl/include
-   ```
+   Note that `OpenSSL` is required (by `Mongoose`).
+
    You can set environment variables. For example, you specify `clang++` as the C++ compiler by setting the `CXX` environment variable as following:
    ```bash
    CXX=clang++ cmake ..

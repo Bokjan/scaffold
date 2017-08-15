@@ -5,9 +5,11 @@
 #include "Request.hpp"
 #include "Response.hpp"
 #include "Scaffold.hpp"
+#include "Plugin/Session.hpp"
 #include "mongoose/mongoose.h"
 #include "../Utility/RequestHelper.hpp"
 using scaf::router;
+using scaf::Session;
 static int sig_num = 0;
 static void signal_handler(int sig)
 {
@@ -84,7 +86,14 @@ void scaffold::eventHandler(mg_connection *nc, int ev, void *p)
 			// match.first => pattern, match.second => callback
 			auto match = router.fetchCallbacks(req.method, req.path);
 			RequestHelper::parseParams(req.params, req.path, match.first);
+#if ENABLE_SESSION
+			Session::onRequestReceived(req, res);
+#endif
+			// Call the callback
 			match.second(req, res);
+#if ENABLE_SESSION
+			Session::onResponseFinished(req, res);
+#endif
 			break;
 		}
 		case MG_EV_HTTP_PART_BEGIN:

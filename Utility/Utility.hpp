@@ -14,5 +14,10 @@ namespace scaf
 	time_t HttpDateStringToTimestamp(string);
 	time_t HttpDateStringToTimestamp(const char *);
 	string TimestampToHttpDateString(time_t);
+	string SHA256(const void *_data, size_t len, bool upper = false);
+	bool FileExists(const char *);
+	bool FileExists(const string &);
+	bool DirectoryExists(const char *);
+	bool DirectoryExists(const string &);
 }
 #endif //SCAFFOLD_UTILITY_HPP

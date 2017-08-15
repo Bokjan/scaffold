@@ -18,6 +18,7 @@ private:
 	void eventHandler(mg_connection *nc, int ev, void *p);
 public:
 	scaffold(void);
+	scaffold(scaffold&) = delete;
 	~scaffold(void);
 	static scaffold* getPointer(void);
 	static scaffold& getReference(void);
@@ -38,5 +39,8 @@ public:
 	void options(string path, callback_t callback);
 	void connect(string path, callback_t callback);
 };
-auto Scaffold = [](){ return scaffold::getReference(); };
+inline scaffold& Scaffold(void)
+{
+	return scaffold::getReference();
+}
 #endif //SCAFFOLD_SCAFFOLD_HPP

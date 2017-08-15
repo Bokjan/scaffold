@@ -7,6 +7,7 @@
 #include "mongoose/mongoose.h"
 #include "../Utility/Utility.hpp"
 #include "../Utility/ResponseHelper.hpp"
+using namespace scaf;
 Response::Response(Request *r, http_message *h, mg_connection *c):
 	req(r), hm(h), conn(c), statusCode(200),
 	_typeSet(false), _headersSent(false), _contentEnded(false)
@@ -49,23 +50,23 @@ string Response::get(const string &key)
 }
 void Response::set(const string &key, const string &value)
 {
-	headers[key] = scaf::UrlEncode(value);
+	headers[key] = UrlEncode(value);
 }
 void Response::header(const string &key, const string &value)
 {
-	headers[key] = scaf::UrlEncode(value);
+	headers[key] = UrlEncode(value);
 }
 void Response::cookie(const string &name, const string &value)
 {
 	Cookie c;
-	c.value = scaf::UrlEncode(value);
+	c.value = UrlEncode(value);
 	cookies[name] = c;
 }
 void Response::cookie(const string &name, Cookie &c)
 {
-	c.value     = scaf::UrlEncode(c.value);
-	c.path      = scaf::UrlEncode(c.path);
-	c.domain    = scaf::UrlEncode(c.domain);
+	c.value     = UrlEncode(c.value);
+	c.path      = UrlEncode(c.path);
+	c.domain    = UrlEncode(c.domain);
 	cookies[name] = c;
 }
 void Response::clearCookie(const string &name)
@@ -102,7 +103,7 @@ void Response::download(const string &file, const string &name)
 void Response::link(const string &rel, const string &link)
 {
 	string line = "<";
-	line += scaf::UrlEncode(link) + ">; rel=\"" + scaf::UrlEncode(rel) + "\"";
+	line += UrlEncode(link) + ">; rel=\"" + UrlEncode(rel) + "\"";
 	auto f = headers.find("Link");
 	if(f == headers.end())
 		headers.insert(std::make_pair("Link", line));
@@ -116,11 +117,11 @@ void Response::location(string path)
 		auto f = req->headers.find("Referer");
 		path = f == req->headers.end() ? "/" : f->second;
 	}
-	set("Location", scaf::UrlEncode(path));
+	set("Location", UrlEncode(path));
 }
 void Response::redirect(string location, int status)
 {
-	if(scaf::HttpStatusDesc.find(status) == scaf::HttpStatusDesc.end())
+	if(HttpStatusDesc.find(status) == HttpStatusDesc.end())
 		status = 302;
 	// A back redirection redirects the request
 	// back to the referer, defaulting to / when the referer is missing.
@@ -129,7 +130,7 @@ void Response::redirect(string location, int status)
 		auto f = req->headers.find("Referer");
 		location = f == req->headers.end() ? "/" : f->second;
 	}
-	location = scaf::UrlEncode(location);
+	location = UrlEncode(location);
 	auto extraHeaders = expandHeader();
 	_contentEnded = true;
 	mg_http_send_redirect(conn, status, {location.c_str(), location.length()},
@@ -138,8 +139,8 @@ void Response::redirect(string location, int status)
 //void Response::render(const string &view, std::map<string, string> vars = {})
 Response& Response::status(int code)
 {
-	statusCode = scaf::HttpStatusDesc.find(code)
-	                != scaf::HttpStatusDesc.end()
+	statusCode = HttpStatusDesc.find(code)
+	                != HttpStatusDesc.end()
 	                ? code : 500;
 	return *this;
 }
@@ -162,8 +163,8 @@ Response* Response::vary(const string &value, bool _x)
 }
 void Response::sendStatus(int code)
 {
-	const auto &f = scaf::HttpStatusDesc.find(code);
-	if(f != scaf::HttpStatusDesc.end())
+	const auto &f = HttpStatusDesc.find(code);
+	if(f != HttpStatusDesc.end())
 		status(code).send(f->second);
 }
 void Response::send(const string &content)
@@ -190,7 +191,7 @@ void Response::sendHeader(void) // Transfer-Encoding: chunked
 	_headersSent = true;
 	// Send response line, `Server` and `Transfer-Encoding`
 	mg_printf(conn, "HTTP/1.1 %d %s\r\nServer: %s\r\n",
-		statusCode, scaf::HttpStatusDesc.at(statusCode),	"Mongoose/" MG_VERSION);
+		statusCode, HttpStatusDesc.at(statusCode),	"Mongoose/" MG_VERSION);
 	mg_send(conn, STATIC_HEADERS, sizeof(STATIC_HEADERS) - 1);
 	string buff = expandHeader() += "\r\n"; // Add CRLF
 	mg_send(conn, buff.c_str(), (int)buff.length());

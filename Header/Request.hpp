@@ -2,6 +2,7 @@
 #define SCAFFOLD_REQUEST_HPP
 #include <map>
 #include <vector>
+#include "RapidJSON.hpp"
 #include "Declaration.hpp"
 struct mg_connection;
 class Request
@@ -15,6 +16,7 @@ public:
 	string path;
 	string hostname;
 	HttpMethod method;
+	rapidjson::Document session;
 	std::map<string, string> post;
 	std::map<string, string> query;
 	std::map<string, string> params;
@@ -26,6 +28,5 @@ public:
 
 	bool is(const string &type);
 	string get(const string &field);
-	string param(const string &name);
 };
 #endif //SCAFFOLD_REQUEST_HPP
