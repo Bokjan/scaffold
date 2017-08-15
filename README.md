@@ -12,11 +12,15 @@ I use macOS 10.12.5 for developing and Fedora 25 for testing. With the help of [
 - [cesanta/mongoose](https://github.com/cesanta/mongoose) (included in this repo)
 - [miloyip/rapidjson](https://github.com/miloyip/rapidjson) (not included in this repo)
 - [openssl/openssl](https://github.com/openssl/openssl) (optional, not included in this repo)
+- [Boost C++ Libraries](http://www.boost.org/users/history/version_1_64_0.html) (optional, not included in this repo)
+- [MySQL Connector/C++](https://dev.mysql.com/downloads/connector/cpp) (optional, not included in this repo)
 
 To solve these dependencies:
 - Mongoose: do nothing.
-- RapidJSON: use package manager, or get the source from GitHub and manually configure it.
+- RapidJSON: use package manager, or get the source from GitHub.
 - OpenSSL: use package manager, usually.
+- Boost C++ Libraries: use package manager, or download from the website.
+- MySQL Connector/C++: download from the website, or use package manager (if exists).
 
 # How to use
 Firstly, we need to build the `scaffold` library.

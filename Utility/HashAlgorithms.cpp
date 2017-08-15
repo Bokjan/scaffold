@@ -5,20 +5,20 @@
 using std::string;
 typedef unsigned char byte;
 // Federal Information Processing Standards Publication 180-2
-#define SHA_ROTL(x, y)  (((x >> (32 - y)) & (0x7fffffff >> (31 - y)))|(x << y))
-#define SHA_SR(x, y)    ((x >> y) & (0x7fffffff >> (y - 1)))
+#define SHA_ROTL(x, y)      (((x >> (32 - y)) & (0x7fffffff >> (31 - y)))|(x << y))
+#define SHA_SR(x, y)        ((x >> y) & (0x7fffffff >> (y - 1)))
 #define SHA256_Ch(x,y,z)    ((x & y) ^ ((~x) & z))
 #define SHA256_Maj(x,y,z)   ((x & y) ^ (x & z) ^ (y & z))
-#define SHA256_S0(x)    (SHA_ROTL(x, 30) ^ SHA_ROTL(x, 19) ^ SHA_ROTL(x, 10))
-#define SHA256_S1(x)    (SHA_ROTL(x, 26) ^ SHA_ROTL(x, 21) ^ SHA_ROTL(x, 7))
-#define SHA256_s0(x)    (SHA_ROTL(x, 25) ^ SHA_ROTL(x, 14) ^ SHA_SR(x, 3))
-#define SHA256_s1(x)    (SHA_ROTL(x, 15) ^ SHA_ROTL(x, 13) ^ SHA_SR(x, 10))
+#define SHA256_S0(x)        (SHA_ROTL(x, 30) ^ SHA_ROTL(x, 19) ^ SHA_ROTL(x, 10))
+#define SHA256_S1(x)        (SHA_ROTL(x, 26) ^ SHA_ROTL(x, 21) ^ SHA_ROTL(x, 7))
+#define SHA256_s0(x)        (SHA_ROTL(x, 25) ^ SHA_ROTL(x, 14) ^ SHA_SR(x, 3))
+#define SHA256_s1(x)        (SHA_ROTL(x, 15) ^ SHA_ROTL(x, 13) ^ SHA_SR(x, 10))
 string scaf::SHA256(const void *_data, size_t len, bool upper)
 {
 	static char buf[68]; // 64
 	size_t i;
 	byte *p, *pe;
-	const byte *data = static_cast<const byte*>(_data);
+	auto data = static_cast<const byte*>(_data);
 	uint32_t t1, t2;
 	uint32_t W[64], A, B, C, D, E, F, G, H;
 	uint32_t H0, H1, H2, H3, H4, H5, H6, H7;
