@@ -31,7 +31,7 @@ SET(SOURCE_FILES
 	Utility/StringOperation.cpp Utility/ResponseHelper.cpp
 	Utility/MimeTypeMapping.cpp Utility/DateTimeHelper.cpp
 	Utility/HttpStatusMapping.cpp Utility/RequestHelper.cpp
-    Utility/HashAlgorithms.cpp Utility/FileSystem.cpp)
+	Utility/HashAlgorithms.cpp Utility/FileSystem.cpp)
 
 # Plugin options
 IF(NOT DISABLE_SESSION) # Session
@@ -52,7 +52,7 @@ IF(NOT DYNAMIC_ONLY)
 		TARGET_LINK_LIBRARIES(scaffold_static ssl crypto)
 	ENDIF()
 	IF(NOT DISABLE_MYSQL)
-		TARGET_LINK_LIBRARIES(scaffold_static mysqlcppconn)
+		TARGET_LINK_LIBRARIES(scaffold_static mysqlcppconn-static)
 	ENDIF()
 ENDIF()
 
