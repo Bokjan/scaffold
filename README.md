@@ -4,7 +4,7 @@
 Inspired by [`Express`](https://expressjs.com), `scaffold` is a minimal and flexible C++ web application framework that provides a set of features for web and mobile applications, and provides a thin layer of fundamental web application features.
 
 # Environment
-To build this project, `cmake`, `make` and a proper C++ compiler is required. The compiler should at least support C++14 standard.
+To build this project, `cmake`, `make` and a proper C++ compiler is required. The compiler should at least support C++11 standard.
 
 I use macOS 10.12.5 for developing and Fedora 25 for testing. With the help of [cesanta/mongoose](https://github.com/cesanta/mongoose), `scaffold` can run on various operating systems and hardware architectures.
 

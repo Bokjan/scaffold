@@ -16,9 +16,7 @@ public:
 	string path;
 	string hostname;
 	HttpMethod method;
-#if ENABLE_SESSION
 	rapidjson::Document session;
-#endif
 	std::map<string, string> post;
 	std::map<string, string> query;
 	std::map<string, string> params;
