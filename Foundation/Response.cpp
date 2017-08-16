@@ -56,10 +56,12 @@ void Response::header(const string &key, const string &value)
 {
 	headers[key] = UrlEncode(value);
 }
-void Response::cookie(const string &name, const string &value)
+void Response::cookie(const string &name, const string &value, bool forever)
 {
 	Cookie c;
 	c.value = UrlEncode(value);
+	if(forever)
+		c.maxAge = 315360000;
 	cookies[name] = c;
 }
 void Response::cookie(const string &name, Cookie &c)
@@ -208,8 +210,8 @@ string Response::expandHeader(void)
 	{
 		buff += "Set-Cookie: " + i.first + "=" + i.second.value;
 		if(i.second.expires != 0 && i.second.maxAge == 0)
-			sprintf(cbuff, "%ld", i.second.expires),
-					buff += "; expires=", buff += cbuff;
+			buff += "; expires=",
+			buff += scaf::TimestampToHttpDateString(i.second.expires);
 		if(i.second.maxAge != 0)
 			sprintf(cbuff, "%d", i.second.maxAge),
 			buff += "; Max-Age=", buff += cbuff;
