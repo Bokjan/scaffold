@@ -20,7 +20,7 @@ To solve these dependencies:
 - RapidJSON: use package manager, or get the source from GitHub.
 - OpenSSL: use package manager, usually.
 - Boost C++ Libraries: use package manager, or download from the website.
-- MySQL Connector/C++: download from the website, or use package manager (if exists).
+- MySQL Connector/C++: please **build from source**! packages downloaded from official website may crash your program! 
 
 # How to use
 Firstly, we need to build the `scaffold` library.

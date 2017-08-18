@@ -9,13 +9,10 @@ using scaf::imysqlstream;
 using scaf::omysqlstream;
 MySQL::MySQL(const string &host, int port, const string &user, const string &pass)
 {
+	std::ostringstream oss;
+	oss << "tcp://" << host << ':' << port;
 	driver = sql::mysql::get_mysql_driver_instance();
-	sql::ConnectOptionsMap map;
-	map["hostName"] = host;
-	map["userName"] = user;
-	map["password"] = pass;
-	map["port"]     = port;
-	conn = driver->connect(map);
+	conn = driver->connect(oss.str().c_str(), user.c_str(), pass.c_str());
 }
 MySQL::~MySQL(void)
 {
