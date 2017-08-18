@@ -35,6 +35,7 @@ namespace scaf
 	public:
 		MySQL(void) = delete;
 		MySQL(MySQL&) = delete;
+		MySQL(MySQL&&) = delete;
 		MySQL(const string &host, int port, const string &user, const string &pass);
 		~MySQL(void);
 		sql::Connection* getConnection(void);

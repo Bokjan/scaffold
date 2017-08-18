@@ -9,28 +9,28 @@ namespace scaf
 	class omysqlstream // Insert data to a PreparedStatement
 	{
 	private:
+		bool tied;
 		bool copied;
-		bool initialized;
 		unsigned int index;
 		sql::PreparedStatement *pstmt;
 		friend class MySQL;
 	public:
 		omysqlstream(void):
-			copied(false), initialized(false),
+			tied(false), copied(false),
 			index(0), pstmt(nullptr) { }
 		omysqlstream(sql::PreparedStatement* ps)
 		{
 			tie(ps);
 		}
 		omysqlstream(omysqlstream &src):
-				copied(false), initialized(src.initialized),
-				index(src.index), pstmt(src.pstmt)
+			tied(src.tied), copied(false),
+			index(src.index), pstmt(src.pstmt)
 		{
 			src.copied = true;
 		}
 		omysqlstream(omysqlstream &&src):
-				copied(false), initialized(src.initialized),
-				index(src.index), pstmt(src.pstmt)
+			tied(src.tied), copied(false),
+			index(src.index), pstmt(src.pstmt)
 		{
 			src.copied = true;
 		}
@@ -38,9 +38,29 @@ namespace scaf
 		{
 			untie();
 		}
-		sql::PreparedStatement* getStatement(void)
+		sql::PreparedStatement& ref(void)
+		{
+			return *pstmt;
+		}
+		sql::PreparedStatement* ptr(void)
 		{
 			return pstmt;
+		}
+		void tie(sql::PreparedStatement* ps)
+		{
+			if(tied)
+				untie();
+			tied = true;
+			pstmt = ps;
+			index = 1;
+		}
+		void untie(void)
+		{
+			if(pstmt != nullptr && !copied)
+				delete pstmt;
+			tied = false;
+			pstmt = nullptr;
+			index = 0;
 		}
 		unsigned int getIndex(void)
 		{
@@ -49,22 +69,6 @@ namespace scaf
 		unsigned int increaseIndex(void)
 		{
 			return index++;
-		}
-		void tie(sql::PreparedStatement* ps)
-		{
-			if(initialized)
-				untie();
-			initialized = true;
-			pstmt = ps;
-			index = 1;
-		}
-		void untie(void)
-		{
-			if(pstmt != nullptr && !copied)
-				delete pstmt;
-			initialized = false;
-			pstmt = nullptr;
-			index = 0;
 		}
 		void clear(void)
 		{
