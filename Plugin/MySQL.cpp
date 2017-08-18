@@ -1,10 +1,12 @@
-#include <memory>
 #include <vector>
 #include <sstream>
 #include <utility>
 #include <stdexcept>
-#include "Plugin/MySQL.hpp"
+#include "Plugin/MySQL/MySQL.hpp"
+#include "Plugin/MySQL/mstream.hpp"
 using scaf::MySQL;
+using scaf::imysqlstream;
+using scaf::omysqlstream;
 MySQL::MySQL(const string &host, int port, const string &user, const string &pass)
 {
 	std::ostringstream oss;
@@ -44,16 +46,22 @@ MySQL* MySQL::use(const string &t)
 	execute(oss.str());
 	return this;
 }
-sql::ResultSet* MySQL::executeQuery(const string &sql)
+imysqlstream MySQL::executeQuery(const string &sql)
 {
 	ensureConnectionAlive();
 	sql::Statement* stmt = conn->createStatement();
-	auto ret = stmt->executeQuery(sql);
+	auto ims = imysqlstream(stmt->executeQuery(sql));
 	delete stmt;
-	return ret;
+	return ims;
 }
-sql::PreparedStatement* MySQL::prepare(const string &psql)
+omysqlstream MySQL::prepare(const string &psql)
 {
 	ensureConnectionAlive();
-	return conn->prepareStatement(psql);
+	return omysqlstream(conn->prepareStatement(psql));
+}
+imysqlstream MySQL::execute(omysqlstream &os)
+{
+	ensureConnectionAlive();
+	auto ims = imysqlstream(os.pstmt->executeQuery());
+	return ims;
 }

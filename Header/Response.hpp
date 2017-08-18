@@ -31,6 +31,7 @@ public:
 	string get(const string &key);
 	void set(const string &key, const string &value);
 	void header(const string &key, const string &value);
+	void crossOrigin(const string &dest);
 	void cookie(const string &name, const string &value, bool forever = false);
 	void cookie(const string &name, Cookie &_cookie);
 	void clearCookie(const string &name);

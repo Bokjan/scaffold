@@ -78,6 +78,10 @@ void scaffold::eventHandler(mg_connection *nc, int ev, void *p)
 	// Todo: finish this method
 	switch(ev)
 	{
+		case MG_EV_HTTP_PART_BEGIN:
+		case MG_EV_HTTP_PART_DATA:
+		case MG_EV_HTTP_PART_END:
+			break;
 		case MG_EV_HTTP_REQUEST:
 		{
 			Request req;
@@ -96,11 +100,6 @@ void scaffold::eventHandler(mg_connection *nc, int ev, void *p)
 #endif
 			break;
 		}
-		case MG_EV_HTTP_PART_BEGIN:
-		case MG_EV_HTTP_PART_DATA:
-		case MG_EV_HTTP_PART_END:
-
-			break;
 		default:;
 	}
 }

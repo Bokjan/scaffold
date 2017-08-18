@@ -56,6 +56,10 @@ void Response::header(const string &key, const string &value)
 {
 	headers[key] = UrlEncode(value);
 }
+void Response::crossOrigin(const string &dest)
+{
+	headers["Access-Control-Allow-Origin"] = dest;
+}
 void Response::cookie(const string &name, const string &value, bool forever)
 {
 	Cookie c;

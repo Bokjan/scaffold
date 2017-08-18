@@ -8,6 +8,23 @@
 using std::string;
 namespace scaf
 {
+	enum class MysqlType
+	{
+		BigInt,     // string
+		Blob,       // std::istream*
+		Boolean,    // bool
+		DateTime,   // string
+		Double,     // double
+		Int,        // int32_t
+		UInt,       // uint32_t
+		Int64,      // int64_t
+		UInt64,     // uint64_t
+		Null,       // sql::DataType::SQLNULL
+		String      // string
+	};
+	// Forward declarations
+	class imysqlstream;
+	class omysqlstream;
 	class MySQL
 	{
 	private:
@@ -21,10 +38,11 @@ namespace scaf
 		MySQL(const string &host, int port, const string &user, const string &pass);
 		~MySQL(void);
 		sql::Connection* getConnection(void);
-		bool execute(const string &sql);
 		MySQL* use(const string &t); // USE `db`
-		sql::ResultSet* executeQuery(const string &sql);
-		sql::PreparedStatement* prepare(const string &psql);
+		bool execute(const string &sql);
+		imysqlstream execute(omysqlstream &os);
+		imysqlstream executeQuery(const string &sql);
+		omysqlstream prepare(const string &psql);
 	};
 }
 #endif //SCAFFOLD_MYSQL_HPP
