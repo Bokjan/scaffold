@@ -81,14 +81,12 @@ void Response::clearCookie(const string &name)
 	if(f != cookies.end())
 		cookies.erase(f);
 }
-void Response::download(const string &file, const string &name)
+void Response::serveFile(const string &file)
 {
 	string mime;
 	auto ct = headers.find("Content-Type");
 	mime = ct != headers.end() ?
 	       ct->second : "application/octet-stream";
-	// Specify the `Content-Disposition` header
-	set("Content-Disposition", "filename=" + name);
 	// Erase the `Content-Type`
 	headers.erase(headers.find("Content-Type"));
 	if(!_typeSet)
@@ -101,10 +99,21 @@ void Response::download(const string &file, const string &name)
 		// Get the MIME according to the suffix
 		mime = ResponseHelper::mimeLookup(file.c_str() + i + 1);
 	}
-	auto extraHeaders = expandHeader();
+	auto extraHeaders = expandHeader().substr(0, string::npos - 2); // Remove the CRLF
 	_contentEnded = true;
 	mg_http_serve_file(conn, hm, file.c_str(), {mime.c_str(), mime.length()},
-	                   {extraHeaders.c_str(), extraHeaders.length() - 2}); // Remove the CRLF
+	                   {extraHeaders.c_str(), extraHeaders.length()});
+}
+void Response::download(const string &file, const string &name)
+{
+	// Specify the `Content-Disposition` header
+	set("Content-Disposition", "filename=" + name);
+	// Find an appropriate `Content-Type`
+	auto f = MimeTable.find(GetFileSuffix(file).c_str());
+	if(f != MimeTable.end())
+		headers["Content-Type"] = f->second;
+	// Call `Response::serveFile`
+	serveFile(file);
 }
 void Response::link(const string &rel, const string &link)
 {

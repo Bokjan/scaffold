@@ -9,6 +9,7 @@ namespace scaf
 	const extern std::map<int, const char * const> HttpStatusDesc;
 	const extern std::map<const char * const, const char * const> MimeTable;
 	bool CompareStringsCaseInsensitive(const char *, const char *);
+	string GetFileSuffix(const string &);
 	string UrlEncode(const string &);
 	string UrlDecode(const string &, bool formUrlEncoded = false);
 	time_t HttpDateStringToTimestamp(string);

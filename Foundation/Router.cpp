@@ -1,5 +1,9 @@
+#include <Request.hpp>
 #include "Router.hpp"
 #include "Response.hpp"
+#include "../Utility/Utility.hpp"
+using scaf::FileExists;
+using scaf::DirectoryExists;
 namespace scaf
 {
 	Router router;
@@ -10,9 +14,9 @@ void scaf::Router::registerCallback(int method, string path, callback_t callback
 }
 std::pair<string, callback_t> scaf::Router::fetchCallbacks(HttpMethod method, string path)
 {
-	std::pair<string, callback_t> ret = std::make_pair(path, [](Request &req, Response &res)
+	std::pair<string, callback_t> ret = std::make_pair(path, [&](Request &req, Response &res)
 	{
-		res.sendStatus(404);
+		router.serveStaticFile(req, res);
 	});
 	if(method == HttpMethod::NOTIMPLEMENTED)
 		return ret;
@@ -51,4 +55,39 @@ std::pair<string, callback_t> scaf::Router::fetchCallbacks(HttpMethod method, st
 	CONTINUE:;
 	}
 	return ret;
+}
+void scaf::Router::setRoot(const string &root)
+{
+	documentRoot = root;
+}
+static string defaultPages[] =
+{
+	"/index.html", "/index.htm", "/default.html", "/default.htm"
+};
+void scaf::Router::serveStaticFile(Request &req, Response &res)
+{
+	if(documentRoot.empty() || req.method != HttpMethod::GET)
+	{
+		res.sendStatus(404);
+		return;
+	}
+	auto file = documentRoot + req.path;
+	if(DirectoryExists(file.c_str())) // Test default pages
+	{
+		for(const auto &i : defaultPages)
+		{
+			auto page = file + i;
+			if(FileExists(page.c_str()))
+			{
+				res.serveFile(page);
+				return;
+			}
+		}
+	}
+	else if(FileExists(file.c_str()))
+	{
+		res.serveFile(file);
+		return;
+	}
+	res.sendStatus(404);
 }

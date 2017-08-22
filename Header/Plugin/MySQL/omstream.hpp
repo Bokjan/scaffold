@@ -5,7 +5,6 @@
 #include <cppconn/datatype.h>
 namespace scaf
 {
-	class imysqlstream;
 	class omysqlstream // Insert data to a PreparedStatement
 	{
 	private:
@@ -136,49 +135,15 @@ namespace scaf
 			pstmt->setUInt64(index++, ui64);
 		}
 	};
-	omysqlstream& operator << (omysqlstream &os, const sql::SQLString &str)
+	template <typename T>
+	omysqlstream& operator << (omysqlstream &os, T value)
 	{
-		os.set(str);
+		os.set(value);
 		return os;
 	}
 	omysqlstream& operator << (omysqlstream &os, const char *str)
 	{
 		os.set(sql::SQLString(str));
-		return os;
-	}
-	omysqlstream& operator << (omysqlstream &os, std::istream &blob)
-	{
-		os.set(blob);
-		return os;
-	}
-	omysqlstream& operator << (omysqlstream &os, bool boolean)
-	{
-		os.set(boolean);
-		return os;
-	}
-	omysqlstream& operator << (omysqlstream &os, double dbl)
-	{
-		os.set(dbl);
-		return os;
-	}
-	omysqlstream& operator << (omysqlstream &os, int32_t i32)
-	{
-		os.set(i32);
-		return os;
-	}
-	omysqlstream& operator << (omysqlstream &os, uint32_t ui32)
-	{
-		os.set(ui32);
-		return os;
-	}
-	omysqlstream& operator << (omysqlstream &os, int64_t i64)
-	{
-		os.set(i64);
-		return os;
-	}
-	omysqlstream& operator << (omysqlstream &os, uint64_t ui64)
-	{
-		os.set(ui64);
 		return os;
 	}
 	omysqlstream& operator << (omysqlstream &os, std::nullptr_t np)

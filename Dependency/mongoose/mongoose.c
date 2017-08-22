@@ -6368,6 +6368,7 @@ static void mg_http_serve_file2(struct mg_connection *nc, const char *path,
   if (mg_match_prefix(opts->ssi_pattern, strlen(opts->ssi_pattern), path) > 0) {
     mg_handle_ssi_request(nc, hm, path, opts);
     return;
+    return;
   }
 #endif
   mg_http_serve_file(nc, hm, path, mg_get_mime_type(path, "text/plain", opts),

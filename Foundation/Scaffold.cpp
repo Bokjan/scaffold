@@ -36,12 +36,14 @@ scaffold& scaffold::getReference(void)
 	static scaffold instance;
 	return instance;
 }
-#if MG_ENABLE_SSL
-void scaffold::setSSL(string cert, string key)
+void scaffold::setSSL(const string &cert, const string &key)
 {
 	sslCert = cert, sslKey = key;
 }
-#endif
+void scaffold::setRoot(const string &root)
+{
+	router.setRoot(root);
+}
 void scaffold::listen(int _port, bool ssl)
 {
 #if MG_ENABLE_SSL

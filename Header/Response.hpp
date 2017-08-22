@@ -35,6 +35,7 @@ public:
 	void cookie(const string &name, const string &value, bool forever = false);
 	void cookie(const string &name, Cookie &_cookie);
 	void clearCookie(const string &name);
+	void serveFile(const string &file);
 	void download(const string &file, const string &name);
 	void link(const string &rel, const string &link);
 	void location(string path);

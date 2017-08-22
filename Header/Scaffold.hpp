@@ -10,10 +10,8 @@ private:
 	mg_mgr *mgr;
 	mg_connection *conn;
 	char port[8];
-#if MG_ENABLE_SSL
 	string sslKey;
 	string sslCert;
-#endif
 
 	void eventHandler(mg_connection *nc, int ev, void *p);
 public:
@@ -23,10 +21,8 @@ public:
 	static scaffold* getPointer(void);
 	static scaffold& getReference(void);
 
-#if MG_ENABLE_SSL
-	void setSSL(string cert, string key);
-#endif
-
+	void setSSL(const string &cert, const string &key);
+	void setRoot(const string &root); // Set root of static files, absolute path
 	void listen(int port, bool ssl = false);
 
 	void all    (string path, callback_t callback);

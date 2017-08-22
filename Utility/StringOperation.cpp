@@ -62,3 +62,13 @@ string scaf::UrlDecode(const string &s, bool formUrlEncoded)
 	}
 	return ret;
 }
+string scaf::GetFileSuffix(const string &s)
+{
+	if(s[0] == '.') // Dot file
+		goto RETURN;
+	for(auto i = s.length() - 1; i != 0; --i)
+		if(s[i] == '.')
+			return s.substr(i + 1);
+RETURN:
+	return string();
+}
