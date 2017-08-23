@@ -50,11 +50,11 @@ string Response::get(const string &key)
 }
 void Response::set(const string &key, const string &value)
 {
-	headers[key] = UrlEncode(value);
+	headers[key] = value;
 }
 void Response::header(const string &key, const string &value)
 {
-	headers[key] = UrlEncode(value);
+	headers[key] = value;
 }
 void Response::crossOrigin(const string &dest)
 {
@@ -81,6 +81,12 @@ void Response::clearCookie(const string &name)
 	if(f != cookies.end())
 		cookies.erase(f);
 }
+void Response::download(const string &file, const string &name)
+{
+	// Specify the `Content-Disposition` header
+	set("Content-Disposition", "filename=" + name);
+	serveFile(file);
+}
 void Response::serveFile(const string &file)
 {
 	string mime;
@@ -99,21 +105,10 @@ void Response::serveFile(const string &file)
 		// Get the MIME according to the suffix
 		mime = ResponseHelper::mimeLookup(file.c_str() + i + 1);
 	}
-	auto extraHeaders = expandHeader().substr(0, string::npos - 2); // Remove the CRLF
+	auto extraHeaders = expandHeader();
 	_contentEnded = true;
 	mg_http_serve_file(conn, hm, file.c_str(), {mime.c_str(), mime.length()},
-	                   {extraHeaders.c_str(), extraHeaders.length()});
-}
-void Response::download(const string &file, const string &name)
-{
-	// Specify the `Content-Disposition` header
-	set("Content-Disposition", "filename=" + name);
-	// Find an appropriate `Content-Type`
-	auto f = MimeTable.find(GetFileSuffix(file).c_str());
-	if(f != MimeTable.end())
-		headers["Content-Type"] = f->second;
-	// Call `Response::serveFile`
-	serveFile(file);
+	                   {extraHeaders.c_str(), extraHeaders.length() - 2}); // Remove the CRLF
 }
 void Response::link(const string &rel, const string &link)
 {

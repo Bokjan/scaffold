@@ -79,14 +79,14 @@ void scaf::Router::serveStaticFile(Request &req, Response &res)
 			auto page = file + i;
 			if(FileExists(page.c_str()))
 			{
-				res.serveFile(page);
+				res.download(page, "nil");
 				return;
 			}
 		}
 	}
 	else if(FileExists(file.c_str()))
 	{
-		res.serveFile(file);
+		res.download(file, "nil");
 		return;
 	}
 	res.sendStatus(404);
