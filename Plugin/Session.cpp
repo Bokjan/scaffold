@@ -9,6 +9,8 @@
 #include "Response.hpp"
 #include "Plugin/Session.hpp"
 #include "../Utility/Utility.hpp"
+#include "rapidjson/filereadstream.h"
+#include "rapidjson/filewritestream.h"
 const static char SESSID_KEY[] = "SCSESSID";
 const static char SESS_DIR[] = "/tmp/scsess/";
 static inline string getSessionFileName(const string &sid)
