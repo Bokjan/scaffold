@@ -1,6 +1,6 @@
 #ifndef SCAFFOLD_SCAFFOLD_HPP
 #define SCAFFOLD_SCAFFOLD_HPP
-#define SCAFFOLD_VERSION_STRING "0.0.0"
+#define SCAFFOLD_VERSION_STRING "0.0.1"
 #include <string>
 #include "Declaration.hpp"
 using std::string;
