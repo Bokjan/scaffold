@@ -34,8 +34,8 @@ scaffold::scaffold(scaffold &r):
 	assert(!isListening);
 }
 scaffold::scaffold(scaffold &&r):
-		mgr(r.mgr), conn(r.conn),
-		sslKey(r.sslKey), sslCert(r.sslCert)
+	mgr(r.mgr), conn(r.conn),
+	sslKey(r.sslKey), sslCert(r.sslCert)
 {
 	assert(!isListening);
 }
