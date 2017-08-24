@@ -57,6 +57,10 @@ void imysqlstream::skip(void)
 {
 	++index;
 }
+void imysqlstream::preventDeleting(void)
+{
+	copied = true;
+}
 size_t imysqlstream::rowsCount(void)
 {
 	return rs->rowsCount();

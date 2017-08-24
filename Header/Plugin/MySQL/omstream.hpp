@@ -26,6 +26,7 @@ namespace scaf
 		unsigned int getIndex(void);
 		unsigned int increaseIndex(void);
 		void clear(void);
+		void preventDeleting(void);
 		void set(const sql::SQLString &s, MysqlType t = MysqlType::String);
 		void set(const char *s, MysqlType t = MysqlType::String);
 		void set(std::istream &blob);

@@ -60,6 +60,10 @@ void omysqlstream::clear(void)
 {
 	index = 1;
 }
+void omysqlstream::preventDeleting(void)
+{
+	copied = true;
+}
 void omysqlstream::set(const sql::SQLString &s, MysqlType t)
 {
 	switch(t)

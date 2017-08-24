@@ -23,6 +23,7 @@ namespace scaf
 		bool startRow(void);
 		void skip(void);
 		size_t rowsCount(void);
+		void preventDeleting(void);
 	};
 }
 scaf::imysqlstream& operator >> (scaf::imysqlstream &is, std::istream*& istream);
