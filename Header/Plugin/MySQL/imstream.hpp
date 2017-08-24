@@ -6,122 +6,31 @@ namespace scaf
 {
 	class imysqlstream // Extract data from ResultSet
 	{
-	private:
+	public:
 		bool tied;
 		bool copied;
 		unsigned int index;
 		sql::ResultSet *rs;
-
-		friend imysqlstream& operator >> (imysqlstream &is, string &str);
- 		friend imysqlstream& operator >> (imysqlstream &is, double &dbl);
-		friend imysqlstream& operator >> (imysqlstream &is, int32_t &i32);
-		friend imysqlstream& operator >> (imysqlstream &is, int64_t &i64);
-		friend imysqlstream& operator >> (imysqlstream &is, bool &boolean);
-		friend imysqlstream& operator >> (imysqlstream &is, uint32_t &ui32);
-		friend imysqlstream& operator >> (imysqlstream &is, uint64_t &ui64);
-		friend imysqlstream& operator >> (imysqlstream &is, std::istream*& istream);
-	public:
-		imysqlstream(void):
-			tied(false), copied(false),
-			rs(nullptr) { }
-		imysqlstream(sql::ResultSet* rs):
-			tied(false), copied(false)
-		{
-			tie(rs);
-		}
-		imysqlstream(imysqlstream &src):
-			tied(src.tied), copied(false),
-			index(src.index), rs(src.rs)
-		{
-			src.copied = true;
-		}
-		imysqlstream(imysqlstream &&src):
-			tied(src.tied), copied(false),
-			index(src.index), rs(src.rs)
-		{
-			src.copied = true;
-		}
-		~imysqlstream(void)
-		{
-			untie();
-		}
-		sql::ResultSet& ref(void)
-		{
-			return *rs;
-		}
-		sql::ResultSet* ptr(void)
-		{
-			return rs;
-		}
-		void tie(sql::ResultSet* _rs)
-		{
-			if(tied)
-				untie();
-			rs = _rs;
-			tied = true;
-		}
-		void untie(void)
-		{
-			if(rs != nullptr && !copied)
-				delete rs;
-			tied = false;
-			rs = nullptr;
-		}
-		bool startRow(void)
-		{
-			if(!rs->next())
-				return false;
-			index = 1;
-			return true;
-		}
-		void skip(void)
-		{
-			++index;
-		}
-		size_t rowsCount(void)
-		{
-			return rs->rowsCount();
-		}
+		imysqlstream(void);
+		imysqlstream(sql::ResultSet* rs);
+		imysqlstream(imysqlstream &src);
+		imysqlstream(imysqlstream &&src);
+		~imysqlstream(void);
+		sql::ResultSet& ref(void);
+		sql::ResultSet* ptr(void);
+		void tie(sql::ResultSet* _rs);
+		void untie(void);
+		bool startRow(void);
+		void skip(void);
+		size_t rowsCount(void);
 	};
-	imysqlstream& operator >> (imysqlstream &is, std::istream*& istream)
-	{
-		istream = is.rs->getBlob(is.index++);
-		return is;
-	}
-	imysqlstream& operator >> (imysqlstream &is, bool &boolean)
-	{
-		boolean = is.rs->getBoolean(is.index++);
-		return is;
-	}
-	imysqlstream& operator >> (imysqlstream &is, double &dbl)
-	{
-		dbl = is.rs->getDouble(is.index++);
-		return is;
-	}
-	imysqlstream& operator >> (imysqlstream &is, int32_t &i32)
-	{
-		i32 = is.rs->getInt(is.index++);
-		return is;
-	}
-	imysqlstream& operator >> (imysqlstream &is, uint32_t &ui32)
-	{
-		ui32 = is.rs->getUInt(is.index++);
-		return is;
-	}
-	imysqlstream& operator >> (imysqlstream &is, int64_t &i64)
-	{
-		i64 = is.rs->getInt64(is.index++);
-		return is;
-	}
-	imysqlstream& operator >> (imysqlstream &is, uint64_t &ui64)
-	{
-		ui64 = is.rs->getUInt64(is.index++);
-		return is;
-	}
-	imysqlstream& operator >> (imysqlstream &is, string &str)
-	{
-		str = is.rs->getString(is.index++);
-		return is;
-	}
 }
+scaf::imysqlstream& operator >> (scaf::imysqlstream &is, std::istream*& istream);
+scaf::imysqlstream& operator >> (scaf::imysqlstream &is, bool &boolean);
+scaf::imysqlstream& operator >> (scaf::imysqlstream &is, double &dbl);
+scaf::imysqlstream& operator >> (scaf::imysqlstream &is, int32_t &i32);
+scaf::imysqlstream& operator >> (scaf::imysqlstream &is, uint32_t &ui32);
+scaf::imysqlstream& operator >> (scaf::imysqlstream &is, int64_t &i64);
+scaf::imysqlstream& operator >> (scaf::imysqlstream &is, uint64_t &ui64);
+scaf::imysqlstream& operator >> (scaf::imysqlstream &is, string &str);
 #endif //SCAFFOLD_IMSTREAM_HPP

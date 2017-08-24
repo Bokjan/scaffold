@@ -3,4 +3,5 @@
 #include "rapidjson/writer.h"
 #include "rapidjson/document.h"
 #include "rapidjson/stringbuffer.h"
+using namespace rapidjson;
 #endif //SCAFFOLD_RAPIDJSON_HPP
