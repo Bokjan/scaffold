@@ -1,7 +1,9 @@
 #include <cstdio>
 #include <cstring>
+#include <cassert>
 #include <stdexcept>
 #include "Router.hpp"
+#include "Logger.hpp"
 #include "Request.hpp"
 #include "Response.hpp"
 #include "Scaffold.hpp"
@@ -10,23 +12,34 @@
 #include "../Utility/RequestHelper.hpp"
 using scaf::router;
 using scaf::Session;
+using scaf::accesslog;
 static int sig_num = 0;
 static void signal_handler(int sig)
 {
 	sig_num = sig;
 	fprintf(stderr, "Signal %d received...\n", sig);
 }
-scaffold::scaffold(void)
+scaffold::scaffold(void):
+	isListening(false)
 {
 	signal(SIGINT, signal_handler);
 	signal(SIGTERM, signal_handler);
 	mgr = (mg_mgr*)malloc(sizeof(mg_mgr));
 	mg_mgr_init(mgr, nullptr);
 }
-scaffold::~scaffold(void)
+scaffold::scaffold(scaffold &r):
+	mgr(r.mgr), conn(r.conn),
+	sslKey(r.sslKey), sslCert(r.sslCert)
 {
-
+	assert(!isListening);
 }
+scaffold::scaffold(scaffold &&r):
+		mgr(r.mgr), conn(r.conn),
+		sslKey(r.sslKey), sslCert(r.sslCert)
+{
+	assert(!isListening);
+}
+scaffold::~scaffold(void) { }
 scaffold* scaffold::getPointer(void)
 {
 	return &getReference();
@@ -50,6 +63,7 @@ void scaffold::listen(int _port, bool ssl)
 	mg_bind_opts bindOpts;
 	memset(&bindOpts, 0, sizeof bindOpts);
 #endif
+	char port[8];
 	if(_port > 0xFFFF || _port < 0)
 		throw std::out_of_range("port out of range");
 	sprintf(port, "%d", _port);
@@ -70,10 +84,39 @@ void scaffold::listen(int _port, bool ssl)
 	if(conn == nullptr)
 		throw std::runtime_error("listen on port failed");
 	mg_set_protocol_http_websocket(conn);
+	isListening = true; // Set the flag
 	while(sig_num == 0)
 		mg_mgr_poll(mgr, 1000);
 	mg_mgr_free(mgr);
 	free(mgr);
+}
+void scaffold::preProcessAccessLog(http_message *hm)
+{
+	accesslog.printTime();
+	accesslog.print("\"%.*s %.*s %.*s\" ",
+		hm->method.len, hm->method.p,
+		hm->uri.len, hm->uri.p,
+		hm->proto.len, hm->proto.p
+	);
+}
+void scaffold::postProcessAccessLog(Request &req, Response &res)
+{
+	std::map<string, string>::iterator f;
+	// IP and status code
+	accesslog.print("%.*s %d ", req.ip.length(), req.ip.c_str(), res.statusCode);
+	// Referer
+	f = req.headers.find("Referer");
+	if(f != req.headers.end())
+		accesslog.print("\"%.*s\" ", f->second.length(), f->second.c_str());
+	// User-Agent
+	f = req.headers.find("User-Agent");
+	if(f != req.headers.end())
+		accesslog.print("\"%.*s\" ", f->second.length(), f->second.c_str());
+	// X-Forwarded-For
+	f = req.headers.find("X-Forwarded-For");
+	if(f != req.headers.end())
+		accesslog.print("\"%.*s\" ", f->second.length(), f->second.c_str());
+	accesslog.putchar('\n');
 }
 void scaffold::eventHandler(mg_connection *nc, int ev, void *p)
 {
@@ -86,6 +129,9 @@ void scaffold::eventHandler(mg_connection *nc, int ev, void *p)
 			break;
 		case MG_EV_HTTP_REQUEST:
 		{
+			// Pre process access log
+			preProcessAccessLog((http_message*)p);
+			// Construct values
 			Request req;
 			req._initialize(nc, ev, p);
 			Response res(&req, (http_message*)p, nc);
@@ -97,6 +143,8 @@ void scaffold::eventHandler(mg_connection *nc, int ev, void *p)
 #endif
 			// Call the callback
 			match.second(req, res);
+			// Post process access log
+			postProcessAccessLog(req, res);
 #if ENABLE_SESSION
 			Session::onResponseFinished(req, res);
 #endif

@@ -4,6 +4,7 @@
 #include <vector>
 #include "Declaration.hpp"
 class Request;
+class scaffold;
 struct http_message;
 struct mg_connection;
 class Response
@@ -22,6 +23,8 @@ private:
 
 	void sendHeader(void);
 	string expandHeader(void);
+
+	friend class scaffold;
 public:
 	Response(void) = delete;
 	Response(Request *r, http_message *h, mg_connection *c);

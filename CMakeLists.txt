@@ -28,6 +28,7 @@ SET(SOURCE_FILES
 	Dependency/mongoose/mongoose.c
 	Foundation/Scaffold.cpp Foundation/Router.cpp
 	Foundation/Request.cpp Foundation/Response.cpp
+    Foundation/Logger.cpp
 	Utility/StringOperation.cpp Utility/ResponseHelper.cpp
 	Utility/MimeTypeMapping.cpp Utility/DateTimeHelper.cpp
 	Utility/HttpStatusMapping.cpp Utility/RequestHelper.cpp
@@ -76,3 +77,4 @@ ELSE()
 			LIBRARY DESTINATION lib)
 ENDIF()
 INSTALL(DIRECTORY Header/ DESTINATION include/scaffold)
+

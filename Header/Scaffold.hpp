@@ -9,14 +9,17 @@ class scaffold
 private:
 	mg_mgr *mgr;
 	mg_connection *conn;
-	char port[8];
 	string sslKey;
 	string sslCert;
+	bool isListening;
 
-	void eventHandler(mg_connection *nc, int ev, void *p);
+	void eventHandler(mg_connection*, int, void*);
+	void preProcessAccessLog(http_message*);
+	void postProcessAccessLog(Request&, Response&);
 public:
 	scaffold(void);
-	scaffold(scaffold&) = delete;
+	scaffold(scaffold&);
+	scaffold(scaffold&&);
 	~scaffold(void);
 	static scaffold* getPointer(void);
 	static scaffold& getReference(void);
@@ -35,8 +38,8 @@ public:
 	void options(string path, callback_t callback);
 	void connect(string path, callback_t callback);
 };
-inline scaffold& Scaffold(void)
+auto Scaffold = []() -> scaffold&
 {
 	return scaffold::getReference();
-}
+};
 #endif //SCAFFOLD_SCAFFOLD_HPP

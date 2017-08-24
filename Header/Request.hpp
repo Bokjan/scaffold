@@ -4,11 +4,13 @@
 #include <vector>
 #include "RapidJSON.hpp"
 #include "Declaration.hpp"
+class scaffold;
 struct mg_connection;
 class Request
 {
 private:
 	mg_connection *conn;
+	friend class scaffold;
 public:
 	bool xhr;
 	string ip;
