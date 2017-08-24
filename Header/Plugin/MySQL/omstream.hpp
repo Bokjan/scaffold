@@ -17,7 +17,8 @@ namespace scaf
 		omysqlstream(void):
 			tied(false), copied(false),
 			index(0), pstmt(nullptr) { }
-		omysqlstream(sql::PreparedStatement* ps)
+		omysqlstream(sql::PreparedStatement* ps):
+			tied(false), copied(false)
 		{
 			tie(ps);
 		}

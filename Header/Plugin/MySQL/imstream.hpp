@@ -24,7 +24,8 @@ namespace scaf
 		imysqlstream(void):
 			tied(false), copied(false),
 			rs(nullptr) { }
-		imysqlstream(sql::ResultSet* rs)
+		imysqlstream(sql::ResultSet* rs):
+			tied(false), copied(false)
 		{
 			tie(rs);
 		}
