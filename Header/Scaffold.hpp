@@ -26,6 +26,7 @@ public:
 
 	void setSSL(const string &cert, const string &key);
 	void setRoot(const string &root); // Set root of static files, absolute path
+	void setListing(bool enable); // Enable directory listing
 	void listen(int port, bool ssl = false);
 
 	void all    (string path, callback_t callback);

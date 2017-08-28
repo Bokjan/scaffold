@@ -58,7 +58,17 @@ std::pair<string, callback_t> scaf::Router::fetchCallbacks(HttpMethod method, st
 }
 void scaf::Router::setRoot(const string &root)
 {
-	documentRoot = root;
+	static string r;
+	r = root;
+	documentRoot = r;
+	serverOpts.document_root = r.c_str();
+}
+void scaf::Router::setListing(bool enable)
+{
+	const static char YES[] = "yes";
+	const static char  NO[] =  "no";
+	serverOpts.enable_directory_listing =
+			enable ? YES : NO;
 }
 static string defaultPages[] =
 {
@@ -72,22 +82,12 @@ void scaf::Router::serveStaticFile(Request &req, Response &res)
 		return;
 	}
 	auto file = documentRoot + req.path;
-	if(DirectoryExists(file.c_str())) // Test default pages
-	{
-		for(const auto &i : defaultPages)
-		{
-			auto page = file + i;
-			if(FileExists(page.c_str()))
-			{
-				res.download(page, "nil");
-				return;
-			}
-		}
-	}
-	else if(FileExists(file.c_str()))
-	{
-		res.download(file, "nil");
-		return;
-	}
+	if(FileExists(file.c_str())) // File or directory exists
+		mg_serve_http(req.conn, req.hm, serverOpts);
 	res.sendStatus(404);
+}
+scaf::Router::Router(void)
+{
+	serverOpts.document_root = "";
+	serverOpts.enable_directory_listing = "no";
 }

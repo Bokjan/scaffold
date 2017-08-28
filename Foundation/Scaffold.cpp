@@ -57,6 +57,10 @@ void scaffold::setRoot(const string &root)
 {
 	router.setRoot(root);
 }
+void scaffold::setListing(bool enable)
+{
+	router.setListing(enable);
+}
 void scaffold::listen(int _port, bool ssl)
 {
 #if MG_ENABLE_SSL

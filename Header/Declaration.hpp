@@ -6,6 +6,7 @@
 using std::string;
 struct mg_mgr;
 struct mg_connection;
+struct http_message;
 class Request;
 class Response;
 using callback_t = std::function<void(Request&, Response&)>;

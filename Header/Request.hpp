@@ -4,13 +4,18 @@
 #include <vector>
 #include "RapidJSON.hpp"
 #include "Declaration.hpp"
+namespace scaf
+{
+	class Router;
+}
 class scaffold;
-struct mg_connection;
 class Request
 {
 private:
 	mg_connection *conn;
+	http_message *hm;
 	friend class scaffold;
+	friend class scaf::Router;
 public:
 	bool xhr;
 	string ip;

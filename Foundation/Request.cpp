@@ -3,7 +3,7 @@
 #include "../Utility/RequestHelper.hpp"
 void Request::_initialize(mg_connection *nc, int ev, void *p)
 {
-	auto hm = (http_message*)p;
+	hm = (http_message*)p;
 	// conn
 	conn = nc;
 	// method
