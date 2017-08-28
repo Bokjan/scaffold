@@ -82,8 +82,25 @@ void scaf::Router::serveStaticFile(Request &req, Response &res)
 		return;
 	}
 	auto file = documentRoot + req.path;
-	if(FileExists(file.c_str())) // File or directory exists
+	if(DirectoryExists(file.c_str())) // Test default pages
+	{
+		for(const auto &i : defaultPages)
+		{
+			auto page = file + i;
+			if(FileExists(page.c_str()))
+			{
+				res.download(page, "nil");
+				return;
+			}
+		}
 		mg_serve_http(req.conn, req.hm, serverOpts);
+		return;
+	}
+	else if(FileExists(file.c_str()))
+	{
+		res.download(file, "nil");
+		return;
+	}
 	res.sendStatus(404);
 }
 scaf::Router::Router(void)
