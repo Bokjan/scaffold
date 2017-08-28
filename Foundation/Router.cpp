@@ -89,7 +89,7 @@ void scaf::Router::serveStaticFile(Request &req, Response &res)
 			auto page = file + i;
 			if(FileExists(page.c_str()))
 			{
-				res.download(page, "nil");
+				res.download(page, page.substr(page.find_last_of('/') + 1));
 				return;
 			}
 		}
@@ -98,7 +98,7 @@ void scaf::Router::serveStaticFile(Request &req, Response &res)
 	}
 	else if(FileExists(file.c_str()))
 	{
-		res.download(file, "nil");
+		res.download(file, file.substr(file.find_last_of('/') + 1));
 		return;
 	}
 	res.sendStatus(404);
