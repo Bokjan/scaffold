@@ -1,4 +1,7 @@
 # What is scaffold
+
+[Manual](https://oiwb8zlpx.qnssl.com/scaffold.pdf) (PDF, Simplified Chinese)
+
 `scaffold` is a cross-platform toy web framework. I develop it for finishing my C++ course.
 
 Inspired by [`Express`](https://expressjs.com), `scaffold` is a minimal and flexible C++ web application framework that provides a set of features for web and mobile applications, and provides a thin layer of fundamental web application features.
