@@ -1,6 +1,6 @@
 # What is scaffold
 
-[Manual](https://oiwb8zlpx.qnssl.com/scaffold.pdf) (PDF, Simplified Chinese)
+[Manual](https://oss.bokjan.com/scaffold.pdf) (PDF, Simplified Chinese)
 
 `scaffold` is a cross-platform toy web framework. I develop it for finishing my C++ course.
 
